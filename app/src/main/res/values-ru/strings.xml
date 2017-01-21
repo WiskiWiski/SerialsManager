@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Мои Сериалы</string>
+    <string name="dialog_title_add">Добавить сериал</string>
+    <string name="dialog_title_edit">Изменить</string>
+    <string name="serial_item_hint_episode">Серия:</string>
+    <string name="dialog_title_add_first_serial">Добавьте свой первый сериал</string>
+    <string name="dialog_button_delete">Удалить</string>
+    <string name="serial_item_hint_season">Сезон:</string>
+    <string name="dialog_button_save">Сохранить</string>
+    <string name="serial_item_hint_note">Заметка…</string>
+    <string name="serial_item_episode_per_season">Серий в сезоне:</string>
+    <string name="serial_item_you_stopped">Просмотрено:</string>
+    <string name="serial_item_hint_serial_name">Сериал</string>
+    <string name="toast_serial_removed">удален</string>
+    <string name="toast_empty_name">Пожалуйста, введите название сериала</string>
+    <string name="toast_serial_already_exist">Сериал с таким именем уже существует</string>
+    <string name="pref_screen_title_sorting_order">Сортировка</string>
+    <string name="pref_screen_title_new_episode_notification">Уведомления</string>
+    <string name="pref_screen_summary_sorting_order">Выберите способ сортировки</string>
+    <string name="pref_screen_summary_new_episode_notification">Уведомлять о выходе новых серий</string>
+    <string name="nav_settings">Настройки</string>
+    <string name="nav_rate_app">Оставить отзыв</string>
+    <string name="nav_serials">Сериалы</string>
+    <string name="toast_apply_after_restart">Изменения вступили в силу после перезапуска</string>
+    <string name="pref_screen_title_version">Версия</string>
+
+</resources>

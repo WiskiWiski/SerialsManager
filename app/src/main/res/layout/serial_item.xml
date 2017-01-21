@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dataCardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/card_vertical_margin"
+    android:layout_marginLeft="@dimen/card_horizontal_margin"
+    android:layout_marginRight="@dimen/card_horizontal_margin"
+    android:layout_marginTop="@dimen/card_vertical_margin"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardBackgroundColor="@color/cardItemBackground"
+    card_view:cardCornerRadius="@dimen/global_corner_radius"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/context_vertical_margin"
+        android:layout_marginLeft="@dimen/context_horizontal_margin"
+        android:layout_marginRight="@dimen/context_horizontal_margin"
+        android:layout_marginTop="@dimen/context_vertical_margin"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/serialName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/large_text_size"
+                android:textStyle="bold"
+                tools:text="Serial" />
+
+            <RelativeLayout
+                android:gravity="left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/youStoppedOnTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_toLeftOf="@+id/ep_container"
+                    android:layout_alignBottom="@+id/ep_container"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingRight="@dimen/context_horizontal_margin"
+                    android:text="@string/serial_item_you_stopped"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="@dimen/you_stopped_text_size" />
+
+
+                <LinearLayout
+                    android:id="@+id/ep_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/seasonTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/seasonEpisodeColor"
+                        android:textSize="@dimen/large_text_size"
+                        android:textStyle="bold|italic"
+                        tools:text="s000" />
+
+                    <TextView
+                        android:id="@+id/episodeTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/seasonEpisodeColor"
+                        android:textSize="@dimen/large_text_size"
+                        android:textStyle="bold|italic"
+                        tools:text="e100" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/plus_one_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/serial_item_button_plus_one_episode"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/textview_style"
+            android:textSize="@dimen/plus_on_size"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_serials"
+            android:checked="true"
+            android:icon="@drawable/ic_play_box_outline_grey600_24dp"
+            android:title="@string/nav_serials"/>
+    </group>
+
+    <group
+        android:id="@+id/menu_additional"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_grey600_24dp"
+            android:title="@string/nav_settings"/>
+        <item
+            android:id="@+id/nav_rate_app"
+            android:icon="@drawable/ic_comment_text_outline_grey600_24dp"
+            android:title="@string/nav_rate_app"/>
+    </group>
+
+</menu>

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "889246753591",
+    "firebase_url": "https://serials-manager.firebaseio.com",
+    "project_id": "serials-manager",
+    "storage_bucket": "serials-manager.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889246753591:android:41e1e3e9057abd16",
+        "android_client_info": {
+          "package_name": "by.wiskiw.serialsmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "889246753591-rbvjkphuk2kkum5vu370j4qf4jvjmbsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo7l8s4OmfR2hCxEIAYq6Go38rYdMLAF4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
