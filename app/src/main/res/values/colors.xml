@@ -13,6 +13,7 @@
 
     <color name="mainBackground">#e1e1e1</color>
     <color name="cardItemBackground">@android:color/white</color>
+    <color name="whiteBackground">@android:color/white</color>
 
     <color name="md_green_800">#2E7D32</color>
 
