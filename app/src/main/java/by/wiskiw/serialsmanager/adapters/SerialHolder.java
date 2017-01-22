@@ -57,19 +57,9 @@ class SerialHolder extends RecyclerView.ViewHolder {
             public void onClick(final View view) {
                 Context context = view.getContext();
                 Utils.vibrate(context, Constants.DEFAULT_VIBRATION);
-                serial = addEpisode(context, serial);
 
-                int showAdEvery = AdManager.showAdEvery(context);
-                int watchedCount = AdManager.getWatchedEpisodesCount(context);
-                if (watchedCount >= showAdEvery) {
-                    AdManager.resetWatchedCounter(context);
-                    AdManager.showPlusClickAd();
-                }
-
-                JsonDatabase.saveSerial(context, serial);
-                recyclerViewChangeListener.onUpdate(context, getAdapterPosition(), serial);
-                SerialsActions.onEpisodeUpdate(view.getContext(), serial);
-                SerialsActions.onEdit(view.getContext(), serial);
+                serial.addEpisode();
+                onPlusClick(context);
             }
         });
 
@@ -77,11 +67,8 @@ class SerialHolder extends RecyclerView.ViewHolder {
             @Override
             public boolean onLongClick(final View view) {
                 Context context = view.getContext();
-                serial = addSeason(context, serial);
-                JsonDatabase.saveSerial(context, serial);
-                recyclerViewChangeListener.onUpdate(context, getAdapterPosition(), serial);
-                SerialsActions.onEpisodeUpdate(view.getContext(), serial);
-                SerialsActions.onEdit(view.getContext(), serial);
+                serial.addSeason();
+                onPlusClick(context);
                 return true;
             }
         });
@@ -108,18 +95,14 @@ class SerialHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private Serial addEpisode(Context context, Serial serial) {
-        AdManager.addWatchedEpisode(context);
+    private void onPlusClick(Context context){
+        JsonDatabase.saveSerial(context, serial);
         Analytics.sendPlusEpisodeEvent(context, serial);
-        serial.addEpisode();
-        return serial;
-    }
+        AdManager.plusOneClick(context);
+        recyclerViewChangeListener.onUpdate(context, getAdapterPosition(), serial);
+        SerialsActions.onEpisodeUpdate(context, serial);
+        SerialsActions.onEdit(context, serial);
 
-    private Serial addSeason(Context context, Serial serial) {
-        AdManager.addWatchedEpisode(context);
-        Analytics.sendPlusEpisodeEvent(context, serial);
-        serial.addSeason();
-        return serial;
     }
 
 }

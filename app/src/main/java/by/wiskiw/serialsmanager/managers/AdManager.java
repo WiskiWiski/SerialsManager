@@ -17,13 +17,14 @@ import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
 public class AdManager {
 
+    private static final String TEST_ID_NEXUS_5 = "8CB3A425BBC68D897028EBCE4C4BB2FB";
+    private static final String TEST_ID_GALAXY_NEXUS = "7923C98F4CEED9E71AC979DD1A212C74";
+
     private static int watchCounter;
     private static int showAdEvery;
     private static InterstitialAd deleteActionInterstitialAd;
     private static InterstitialAd plusClickInterstitialAd;
     private static boolean adsEnable = false;
-    private static String TEST_ID_NEXUS_5 = "8CB3A425BBC68D897028EBCE4C4BB2FB";
-    private static String TEST_ID_GALAXY_NEXUS = "7923C98F4CEED9E71AC979DD1A212C74";
     private static AdRequest adRequest;
 
     public static void prepareAd(Context context) {
@@ -91,35 +92,45 @@ public class AdManager {
         }
     }
 
-    public static void showPlusClickAd() {
+    private static void showPlusClickAd() {
         if (adsEnable && plusClickInterstitialAd != null && plusClickInterstitialAd.isLoaded()) {
             plusClickInterstitialAd.show();
             requestNewInterstitial(plusClickInterstitialAd);
         }
     }
 
-    public static int getWatchedEpisodesCount(Context context) {
+    private static int getWatchedEpisodesCount(Context context) {
         if (watchCounter == -1) {
             watchCounter = PreferencesStorage.getInt(context, Constants.PREFERENCE_WATCHED_EPISODES_COUNTER, 0);
         }
         return watchCounter;
     }
 
-    public static void addWatchedEpisode(Context context) {
+    private static void addWatchedEpisode(Context context) {
         watchCounter = getWatchedEpisodesCount(context) + 1;
         PreferencesStorage.saveInt(context, Constants.PREFERENCE_WATCHED_EPISODES_COUNTER, watchCounter);
     }
 
-    public static void resetWatchedCounter(Context context){
+    private static void resetWatchedCounter(Context context){
         watchCounter = 0;
         PreferencesStorage.saveInt(context, Constants.PREFERENCE_WATCHED_EPISODES_COUNTER, watchCounter);
     }
 
-    public static int showAdEvery(Context context){
+    private static int showAdEvery(Context context){
         if (showAdEvery == -1) {
             showAdEvery = PreferencesStorage.getInt(context,
                     Constants.PREFERENCE_SHOW_AD_EVERY, Constants.DEFAULT_VALUE_SHOW_AD_EVERY);
         }
         return showAdEvery;
+    }
+
+    public static void plusOneClick(Context context){
+        int showAdEvery = showAdEvery(context);
+        int watchedCount = getWatchedEpisodesCount(context);
+        if (watchedCount >= showAdEvery) {
+            resetWatchedCounter(context);
+            showPlusClickAd();
+        }
+        addWatchedEpisode(context);
     }
 }
