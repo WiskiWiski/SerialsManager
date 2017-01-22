@@ -260,10 +260,9 @@ public class Notificator {
                 try {
                     dateString = showTimeString + " " + day + "." + mouth + "." + year;
 
-                    TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
                     DateFormat dateFormat = new SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.ROOT);
-                    dateFormat.setTimeZone(timeZone);
-                    Calendar calendar = Calendar.getInstance(timeZone);
+                    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
                     calendar.setTime(dateFormat.parse(dateString));
 
                     //Log.d(Constants.TAG, "UTC time:   " + calendar.getTimeInMillis());
