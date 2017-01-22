@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -192,6 +193,10 @@ public class Notificator {
                     }
                 }
         );
+        getRequest.setRetryPolicy(new DefaultRetryPolicy(
+                Constants.DEFAULT_REQUEST_TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(getRequest);
     }
 

@@ -10,6 +10,7 @@ public class Constants {
     public static final String OLD_DATABASE_NAME = "SerialsManager.db";
     public static final int DEFAULT_VIBRATION = 8;
     public static final int MIN_IDENTITY_LVL = 84;
+    public static final int DEFAULT_REQUEST_TIMEOUT = 60000;
 
     public static final String JSON_TAG_EPISODE = "episode";
     public static final String JSON_TAG_SEASON = "season";
