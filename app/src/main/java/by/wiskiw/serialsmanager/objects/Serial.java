@@ -81,19 +81,32 @@ public class Serial {
     }
 
     public int getSeason() {
-        return season;
+        return season < 1 ? 1 : season;
     }
 
     public void setSeason(int season) {
         this.season = season;
     }
 
+    public void addSeason(){
+        season++;
+        episode = 1;
+    }
+
     public int getEpisode() {
-        return episode;
+        return episode < 1 ? 1 : episode;
     }
 
     public void setEpisode(int episode) {
         this.episode = episode;
+    }
+
+    public void addEpisode(){
+        if (episode >= eps && eps != 0) {
+            episode = 0;
+            addSeason();
+        }
+        episode++;
     }
 
     public int getNextEpisode() {

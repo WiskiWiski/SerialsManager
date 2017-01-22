@@ -52,13 +52,8 @@ public class MainActivity extends AppCompatActivity
             SqlDatabaseManager.updateToJson(this);
         }
 
-        //setMainFragment();
-        showEditDialog();
-        /*
-        FragmentManager manager = getSupportFragmentManager();
-        SerialRootFragment myDialogFragment = new SerialRootFragment();
-        myDialogFragment.show(manager, "dialog");
-        */
+        setMainFragment();
+        //showEditDialog(); // DEBUG
     }
 
     private void showEditDialog() {

@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Vibrator;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -82,4 +83,11 @@ public class Utils {
                     Constants.PREFERENCE_OLD_FAG_LVL, BuildConfig.VERSION_CODE);
         }
     }
+
+    public static boolean vibrate(Context c, int i) {
+        Vibrator v = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(i);
+        return false;
+    }
+
 }

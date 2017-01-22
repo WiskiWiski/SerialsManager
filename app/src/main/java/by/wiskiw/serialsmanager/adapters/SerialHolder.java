@@ -1,7 +1,6 @@
 package by.wiskiw.serialsmanager.adapters;
 
 import android.content.Context;
-import android.os.Vibrator;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -15,7 +14,6 @@ import by.wiskiw.serialsmanager.SerialsActions;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.Utils;
 import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 /**
@@ -35,8 +33,8 @@ class SerialHolder extends RecyclerView.ViewHolder {
 
     void showData() {
         serialNameView.setText(serial.getName());
-        showEpisode(serial);
-        showSeason(serial);
+        episodeView.setText("e" + String.valueOf(serial.getEpisode()));
+        seasonView.setText("s" + String.valueOf(serial.getSeason()));
     }
 
     void setRecyclerViewChangeListener(RecyclerViewChangeListener recyclerViewChangeListener) {
@@ -58,20 +56,18 @@ class SerialHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(final View view) {
                 Context context = view.getContext();
-                vibrate(context, Constants.DEFAULT_VIBRATION);
+                Utils.vibrate(context, Constants.DEFAULT_VIBRATION);
                 serial = addEpisode(context, serial);
 
                 int showAdEvery = AdManager.showAdEvery(context);
                 int watchedCount = AdManager.getWatchedEpisodesCount(context);
-                if (watchedCount >= showAdEvery){
+                if (watchedCount >= showAdEvery) {
                     AdManager.resetWatchedCounter(context);
                     AdManager.showPlusClickAd();
                 }
 
                 JsonDatabase.saveSerial(context, serial);
                 recyclerViewChangeListener.onUpdate(context, getAdapterPosition(), serial);
-                //showEpisode(serial);
-                //showSeason(serial);
                 SerialsActions.onEpisodeUpdate(view.getContext(), serial);
                 SerialsActions.onEdit(view.getContext(), serial);
             }
@@ -84,8 +80,6 @@ class SerialHolder extends RecyclerView.ViewHolder {
                 serial = addSeason(context, serial);
                 JsonDatabase.saveSerial(context, serial);
                 recyclerViewChangeListener.onUpdate(context, getAdapterPosition(), serial);
-//                showEpisode(serial);
-//                showSeason(serial);
                 SerialsActions.onEpisodeUpdate(view.getContext(), serial);
                 SerialsActions.onEdit(view.getContext(), serial);
                 return true;
@@ -117,41 +111,15 @@ class SerialHolder extends RecyclerView.ViewHolder {
     private Serial addEpisode(Context context, Serial serial) {
         AdManager.addWatchedEpisode(context);
         Analytics.sendPlusEpisodeEvent(context, serial);
-        int episode = serial.getEpisode();
-        int eps = serial.getEps();
-        if (episode >= eps && eps != 0) {
-            episode = 0;
-            int season = serial.getSeason();
-            serial.setSeason(++season);
-        }
-        serial.setEpisode(++episode);
+        serial.addEpisode();
         return serial;
     }
 
     private Serial addSeason(Context context, Serial serial) {
         AdManager.addWatchedEpisode(context);
         Analytics.sendPlusEpisodeEvent(context, serial);
-        int season = serial.getSeason();
-        serial.setEpisode(1);
-        serial.setSeason(++season);
+        serial.addSeason();
         return serial;
     }
 
-    private void showEpisode(Serial serial) {
-        int episodeNumInt = serial.getEpisode();
-        episodeNumInt = episodeNumInt < 1 ? 1 : episodeNumInt;
-        episodeView.setText("e" + String.valueOf(episodeNumInt));
-    }
-
-    private void showSeason(Serial serial) {
-        int seasonNumInt = serial.getSeason();
-        seasonNumInt = seasonNumInt < 1 ? 1 : seasonNumInt;
-        seasonView.setText("s" + String.valueOf(seasonNumInt));
-    }
-
-    private static boolean vibrate(Context c, int i) {
-        Vibrator v = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(i);
-        return false;
-    }
 }
