@@ -1,7 +1,8 @@
-package by.wiskiw.serialsmanager.adapters;
+package by.wiskiw.serialsmanager.main.fragments.recyclerview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.Utils;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.settings.SettingsHelper;
 
 import static by.wiskiw.serialsmanager.defaults.Constants.TAG;
 
@@ -74,7 +76,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         switch (viewType) {
             case SERIAL_ITEM_VIEW_TYPE:
                 final SerialHolder serialHolder = (SerialHolder) holder;
-                final Serial serial = (Serial) serialsList.get(position);
+                final Serial serial = serialsList.get(getPosWithoutAd(position));
 
 
                 serialHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -102,7 +104,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         Context context = view.getContext();
                         Utils.vibrate(context, Constants.DEFAULT_VIBRATION);
                         serial.addEpisode();
-                        serialHolder.onPlusClick(context, serial);
+                        serialHolder.plusClick(context, serial);
                         updateSerialView(serialHolder.getAdapterPosition(), serial);
                     }
                 });
@@ -112,7 +114,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     public boolean onLongClick(final View view) {
                         Context context = view.getContext();
                         serial.addSeason();
-                        serialHolder.onPlusClick(context, serial);
+                        serialHolder.plusClick(context, serial);
                         updateSerialView(serialHolder.getAdapterPosition(), serial);
                         return true;
                     }
@@ -159,46 +161,71 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return serialsList.size();
+        return getPosWithAd(serialsList.size() - 1) + 1; // считаем размер с учетом Ad-элемента
     }
 
     private void scrollTo(int pos) {
-        pos = pos > 0 ? pos - 1 : pos;
         RecyclerView recyclerView = (RecyclerView) ((Activity) context).findViewById(R.id.recycler_view);
         recyclerView.scrollToPosition(pos);
     }
 
+    private int getPosWithAd(int pos) {
+        // Вовзращает позицию в Recycler View с учетом Ad-элемента
+        if (pos >= adRow) {
+            pos++; // +1 if index after ad row
+        }
+        return pos;
+    }
+
+    private int getPosWithoutAd(int pos) {
+        // Вовзращает позицию в Serial List вычетая Ad-элемент
+        if (pos >= adRow) {
+            pos--; // +1 if index after ad row
+        }
+        return pos;
+    }
+
     public void addSerialView(Serial serial) {
         int pos = getAlphabeticalIndex(serial);
+        int n = getItemCount();
         serialsList.add(pos, serial);
-        notifyItemInserted(pos);
-        scrollTo(pos);
+        //notifyItemInserted(getPosWithAd(pos));
+        notifyItemRangeInserted(getPosWithAd(pos), getItemCount() - n);
+        scrollTo(getPosWithAd(pos));
     }
 
     public void updateSerialView(int pos, Serial serial) {
-        serialsList.set(pos, serial);
+        serialsList.set(getPosWithoutAd(pos), serial);
         notifyItemChanged(pos);
     }
 
     public void renameSerialView(int oldPos, Serial newSerial) {
         int newPos = getAlphabeticalIndex(newSerial);
         newPos = newPos == 0 ? 0 : newPos - 1;
-        updateSerialView(oldPos, newSerial);
-        serialsList.remove(oldPos);
+        updateSerialView(getPosWithoutAd(oldPos), newSerial);
+        serialsList.remove(getPosWithoutAd(oldPos));
         serialsList.add(newPos, newSerial);
-        notifyItemMoved(oldPos, newPos);
-        scrollTo(newPos);
+        notifyItemMoved(oldPos, getPosWithAd(newPos));
+        scrollTo(getPosWithAd(newPos));
     }
 
     public void removeSerialView(int pos) {
-        serialsList.remove(pos);
-        notifyItemChanged(pos);
+        int n = getItemCount();
+        serialsList.remove(getPosWithoutAd(pos));
+        if (n - getItemCount() > 1) {
+            // Если удаилось 2 элемента
+            notifyItemRangeRemoved(getPosWithoutAd(pos), 2);
+        } else {
+            notifyItemRangeRemoved(pos, 1);
+        }
     }
 
     private int getAlphabeticalIndex(Serial serial) {
-        if (serialsList.size() < 1) {
+        if (SettingsHelper.getShortingMethod(context) == SettingsHelper.ShortingOrder.DATE
+                || serialsList.size() < 1) {
             return 0;
         }
+
         int index = Collections.binarySearch(serialsList, serial, new Comparator<Serial>() {
             @Override
             public int compare(Serial serial1, Serial serial2) {
@@ -209,9 +236,6 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (index < 0) {
             index = (index * -1) - 1;
-        }
-        if (index >= adRow) {
-            index++; // +1 if index after ad row
         }
         return index;
     }
@@ -225,11 +249,11 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public interface OnSerialLongClickListener {
-        void onLongClick(int position, Serial serial);
+        void onLongClick(int position, Serial serial); // position - позиция в Recycler View (с учетом рекламы)
     }
 
     public interface OnSerialClickListener {
-        void onClick(int position, Serial serial);
+        void onClick(int position, Serial serial); // position - позиция в Recycler View (с учетом рекламы)
     }
 
 }

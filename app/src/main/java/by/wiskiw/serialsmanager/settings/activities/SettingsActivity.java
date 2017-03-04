@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.settings.activity;
+package by.wiskiw.serialsmanager.settings.activities;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -8,8 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.fragments.MainFragment;
-import by.wiskiw.serialsmanager.fragments.SettingsFragment;
+import by.wiskiw.serialsmanager.settings.fragments.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
 

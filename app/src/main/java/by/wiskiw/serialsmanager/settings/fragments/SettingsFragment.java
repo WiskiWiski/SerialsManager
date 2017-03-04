@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.fragments;
+package by.wiskiw.serialsmanager.settings.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;

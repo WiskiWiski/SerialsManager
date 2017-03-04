@@ -5,8 +5,7 @@ package by.wiskiw.serialsmanager.defaults;
  */
 public class Constants {
     public static final String TAG = "SERIALS_MANAGER";
-    public static final String DELETE_ACTION_UNIT_ID = "ca-app-pub-5135672707034508/7704077670";
-    public static final String PLUS_CLICK_UNIT_ID = "ca-app-pub-5135672707034508/3097251273";
+
     public static final String OLD_DATABASE_NAME = "SerialsManager.db";
     public static final int DEFAULT_VIBRATION = 8;
     public static final int MIN_IDENTITY_LVL = 84;
@@ -37,6 +36,6 @@ public class Constants {
     public static final int DEFAULT_VALUE_OLD_FAG_LVL = 999;
     public static final int DEFAULT_VALUE_SHOW_AD_EVERY = 8;
     public static final boolean DEFAULT_VALUE_SERIALS_NOTIFICATIONS = true;
-    public static final String DEFAULT_VALUE_CONTACT_EMAIL = "WiskiWiski2310@gmail.com";
+    public static final String DEFAULT_VALUE_CONTACT_EMAIL = "wiskiw@ya.ru";
 
 }

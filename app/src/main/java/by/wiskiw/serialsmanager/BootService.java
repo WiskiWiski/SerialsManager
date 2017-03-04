@@ -9,7 +9,7 @@ import java.util.List;
 
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.objects.Serial;
-import by.wiskiw.serialsmanager.storage.PreferencesHelper;
+import by.wiskiw.serialsmanager.settings.SettingsHelper;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 
@@ -28,7 +28,7 @@ public class BootService extends IntentService {
         // Reset all alarms here
         Log.d(Constants.TAG, "Successfully started BootService");
         Context context = getApplicationContext();
-        if (PreferencesHelper.isNotificationsEnable(context)) {
+        if (SettingsHelper.isNotificationsEnable(context)) {
             List<Serial> serials = JsonDatabase.getSerials(context);
             for (Serial serial : serials) {
                 Notificator.checkNotificationData(context, serial);

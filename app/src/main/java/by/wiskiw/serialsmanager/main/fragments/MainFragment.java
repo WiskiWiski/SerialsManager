@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.fragments;
+package by.wiskiw.serialsmanager.main.fragments;
 
 
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,10 @@ import java.util.List;
 import by.wiskiw.serialsmanager.Notificator;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.Utils;
-import by.wiskiw.serialsmanager.adapters.SerialListAdapter;
+import by.wiskiw.serialsmanager.main.fragments.recyclerview.SerialListAdapter;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.edit.fragment.SerialEditFragment;
+import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.storage.FirebaseDatabase;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
@@ -31,11 +33,6 @@ import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 public class MainFragment extends Fragment {
 
     private static final String TAG = Constants.TAG;
-
-
-    private static final int AD_ROW = 6;
-    private static final int NATIVE_EXPRESS_AD_HEIGHT = 150;
-    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/1072772517";
 
     private NativeExpressAdView adView;
     private SerialListAdapter serialListAdapter;
@@ -50,10 +47,11 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        Context context = rootView.getContext();
+        Context context = getContext();
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         fillRecyclerView(context);
 
@@ -63,7 +61,6 @@ public class MainFragment extends Fragment {
 
     private void fillRecyclerView(final Context context) {
         List<Serial> serialList = JsonDatabase.getSerials(context);
-
         if (serialList.size() == 0 && Utils.firstStart) {
             // If serial list is empty
             addNewSerial();
@@ -78,11 +75,14 @@ public class MainFragment extends Fragment {
                     serialEditFragment.setOnEditListener(new SerialEditFragment.OnEditListener() {
                         @Override
                         public void onEdit(Serial oldSerial, Serial newSerial) {
-                            if (!oldSerial.getName().equals(newSerial.getName())){
+                            boolean requestNotifData = false;
+                            if (!oldSerial.getName().equals(newSerial.getName())) {
                                 // Serial renamed
                                 JsonDatabase.renameSerial(context, oldSerial, newSerial);
                                 FirebaseDatabase.renameSerial(context, oldSerial, newSerial);
                                 serialListAdapter.renameSerialView(position, newSerial);
+                                newSerial.resetNotificationData();
+                                requestNotifData = true;
                             } else {
                                 JsonDatabase.saveSerial(context, newSerial);
                                 FirebaseDatabase.saveSerial(context, newSerial);
@@ -91,6 +91,9 @@ public class MainFragment extends Fragment {
                             if (oldSerial.getEpisode() != newSerial.getEpisode() ||
                                     oldSerial.getSeason() != newSerial.getSeason()) {
                                 // Serial's episode/season changed
+                                requestNotifData = true;
+                            }
+                            if (requestNotifData) {
                                 Notificator.checkNotificationData(context, newSerial);
                             }
 
@@ -107,7 +110,9 @@ public class MainFragment extends Fragment {
                 }
             });
             recyclerView.setAdapter(serialListAdapter);
-            setUpAndLoadNativeExpressAds(context);
+            if (AdManager.isAdsEnable(context)) {
+                setUpAndLoadNativeExpressAds(context);
+            }
         }
     }
 
@@ -131,21 +136,9 @@ public class MainFragment extends Fragment {
         });
     }
 
-    /*
-    private void setSerial(Serial serial) {
-        if (PreferencesHelper.getShortingMethod(getContext()).equals("alphabet_order")) {
-            int index = getAlphabeticalIndex(serial);
-            serialList.add(index, serial);
-        } else {
-            serialList.add(serial);
-        }
-        serialListAdapter.updateView(generateObjectList());
-    }
-    */
-
     private void setUpAndLoadNativeExpressAds(Context context) {
         adView = new NativeExpressAdView(context);
-        serialListAdapter.setAdView(adView, AD_ROW);
+        serialListAdapter.setAdView(adView, AdManager.AD_ROW);
         // Use a Runnable to ensure that the RecyclerView has been laid out before setting the
         // ad size for the Native Express ad. This allows us to set the Native Express ad's
         // width to match the full width of the RecyclerView.
@@ -155,9 +148,9 @@ public class MainFragment extends Fragment {
                 final float scale = getContext().getResources().getDisplayMetrics().density;
                 final CardView cardView = (CardView) recyclerView.findViewById(R.id.card_view);
                 final int adWidth = cardView.getWidth() - cardView.getPaddingLeft() - cardView.getPaddingRight();
-                AdSize adSize = new AdSize((int) (adWidth / scale), NATIVE_EXPRESS_AD_HEIGHT);
+                AdSize adSize = new AdSize((int) (adWidth / scale), AdManager.RECYCLER_VIEW_AD_HEIGHT);
                 adView.setAdSize(adSize);
-                adView.setAdUnitId(AD_UNIT_ID);
+                adView.setAdUnitId(AdManager.getRecyclerViewNativeAdUnitId());
 
                 // Load the Native Express ad.
                 adView.loadAd(new AdRequest.Builder().build());

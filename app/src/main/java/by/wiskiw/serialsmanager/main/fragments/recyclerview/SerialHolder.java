@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.adapters;
+package by.wiskiw.serialsmanager.main.fragments.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -34,7 +34,7 @@ class SerialHolder extends RecyclerView.ViewHolder {
         plusOne = (TextView) itemView.findViewById(R.id.plus_one_btn);
     }
 
-    void onPlusClick(Context context, Serial serial){
+    void plusClick(Context context, Serial serial) {
         JsonDatabase.saveSerial(context, serial);
         Analytics.sendPlusEpisodeEvent(context, serial);
         AdManager.plusOneClick(context);

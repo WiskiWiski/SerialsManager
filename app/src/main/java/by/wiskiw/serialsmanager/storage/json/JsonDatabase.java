@@ -15,7 +15,7 @@ import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.storage.PreferencesHelper;
+import by.wiskiw.serialsmanager.settings.SettingsHelper;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
 /**
@@ -98,7 +98,7 @@ public class JsonDatabase {
             }
 
 
-            if (PreferencesHelper.getShortingMethod(context).equals("alphabet_order")) {
+            if (SettingsHelper.getShortingMethod(context) == SettingsHelper.ShortingOrder.ALPHABET){
                 serials = sortByAlphabet(serials);
             }
 

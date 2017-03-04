@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.activities;
+package by.wiskiw.serialsmanager.main.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +17,8 @@ import android.view.MenuItem;
 import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.Utils;
-import by.wiskiw.serialsmanager.fragments.MainFragment;
-import by.wiskiw.serialsmanager.settings.activity.SettingsActivity;
+import by.wiskiw.serialsmanager.main.fragments.MainFragment;
+import by.wiskiw.serialsmanager.settings.activities.SettingsActivity;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 import by.wiskiw.serialsmanager.storage.sql.SqlDatabaseManager;
 

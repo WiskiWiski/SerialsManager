@@ -21,6 +21,8 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,12 +31,11 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import by.wiskiw.serialsmanager.activities.MainActivity;
+import by.wiskiw.serialsmanager.main.activities.MainActivity;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.receivers.AlarmBroadcastReceiver;
-import by.wiskiw.serialsmanager.storage.PreferencesHelper;
-import by.wiskiw.serialsmanager.storage.PreferencesStorage;
+import by.wiskiw.serialsmanager.settings.SettingsHelper;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 /**
@@ -42,6 +43,10 @@ import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
  */
 
 public class Notificator {
+
+    private static final String TAG = Constants.TAG;
+    //private static final String SERIAL_CHECK_URL = "http://wiskiw.esy.es/sm/check_serial.php?serial=";
+    private static final String SERIAL_CHECK_URL = "https://wiskiw.000webhostapp.com/sm/check_serial.php?serial=";
 
     public static void createNotification(Context context, Intent receiverIntent) {
         Intent notificationIntent = new Intent(context, MainActivity.class);
@@ -91,7 +96,7 @@ public class Notificator {
     private static void setAlarm(Context context, Serial serial) {
         long timeMs = serial.getNextEpisodeDateMs();
         String timeStr = Utils.getDate(timeMs);
-        Log.d(Constants.TAG, "Alarm set on " + timeStr + " - " + timeMs);
+        Log.d(TAG, "Alarm set on " + timeStr + " - " + timeMs);
         Toast.makeText(context, "Alarm set on " + timeStr, Toast.LENGTH_LONG).show();
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -105,21 +110,21 @@ public class Notificator {
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeMs, pendingIntent);
     }
 
-    static void cancelAlarm(Context context, Serial serial) {
+    public static void cancelAlarm(Context context, Serial serial) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, Notificator.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, serial.getNotificationId(), intent, 0);
         alarmManager.cancel(pendingIntent);
-        Log.d(Constants.TAG, "Alarms removed for " + serial.getName());
+        Log.d(TAG, "Alarms removed for " + serial.getName());
     }
 
-    static void checkNotificationData(final Context context, Serial serial) {
-        if (!PreferencesHelper.isNotificationsEnable(context)) return;
+    public static void checkNotificationData(final Context context, Serial serial) {
+        if (!SettingsHelper.isNotificationsEnable(context)) return;
 
         if (serial.getIdentityLevel() == -1) {
             requestNotificationData(context, serial);
         } else if (serial.getIdentityLevel() < Constants.MIN_IDENTITY_LVL) {
-            Log.d(Constants.TAG, "Identity level (" + serial.getIdentityLevel()
+            Log.d(TAG, "Identity level (" + serial.getIdentityLevel()
                     + "%) for '" + serial.getName() + "' is too low, alarm didn't created");
         } else if (serial.getNextEpisodeDateMs() == -1) {
             requestNotificationData(context, serial);
@@ -127,12 +132,12 @@ public class Notificator {
             long nextEpDateMs = serial.getNextEpisodeDateMs();
             if (nextEpDateMs == 0) {
                 // TODO: Не удалось получить дату напоминания
-                Log.d(Constants.TAG, "Next episode date for '" + serial.getName() + "' not found.");
+                Log.d(TAG, "Next episode date for '" + serial.getName() + "' not found.");
             } else if (Utils.isFutureTime(nextEpDateMs)) {
                 serial.setNotificationId((int) (nextEpDateMs / 100000));
                 int nextSeasonNum = serial.getNextSeason();
                 int nextEpisodeNum = serial.getNextEpisode();
-                Log.d(Constants.TAG, "Next episode of '" + serial.getName() +
+                Log.d(TAG, "Next episode of '" + serial.getName() +
                         "'(" + serial.getIdentityLevel() + "%) s" + nextSeasonNum + "e" + nextEpisodeNum);
                 if (nextSeasonNum == 0 || nextEpisodeNum == 0) {
                     // TODO: Создать Alarm без номера серии
@@ -152,7 +157,7 @@ public class Notificator {
                 }
             } else {
                 // Notification time in the past
-                Log.d(Constants.TAG, "Notification time is out of date for '" + serial.getName() + "'. Try again...");
+                Log.d(TAG, "Notification time is out of date for '" + serial.getName() + "'. Try again...");
                 serial.resetNotificationData();
                 JsonDatabase.saveSerial(context, serial);
                 requestNotificationData(context, serial);
@@ -161,43 +166,48 @@ public class Notificator {
     }
 
     private static void requestNotificationData(final Context context, final Serial serial) {
-        Log.d(Constants.TAG, "Request for " + serial.getName());
+        Log.d(TAG, "Request for " + serial.getName());
         RequestQueue queue = Volley.newRequestQueue(context);
-        final String url = "http://wiskiw.esy.es/sm/check_serial.php?serial=" + serial.getName();
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        serial.setIdentityLevel(response.optInt("identity_lvl", 0));
-                        if (serial.getIdentityLevel() >= Constants.MIN_IDENTITY_LVL) {
-                            String showTime = response.optString("show_time", null);
-                            //serial.setShowTime(response.optString("show_time", null));
+        try {
+            final String url = SERIAL_CHECK_URL + URLEncoder.encode(serial.getName(), "UTF-8");
+            JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            serial.setIdentityLevel(response.optInt("identity", 0));
+                            if (serial.getIdentityLevel() >= Constants.MIN_IDENTITY_LVL) {
+                                String showTime = response.optString("show_time", null);
+                                //serial.setShowTime(response.optString("show_time", null));
 
-                            String nextEpisodeDateString = response.optString("next_episode_date", null);
-                            long nextEpisodeDateMs = parseDateString(nextEpisodeDateString, showTime);
-                            serial.setNextEpisodeDateMs(nextEpisodeDateMs);
-                            if (nextEpisodeDateMs != 0) {
-                                serial.setNextSeason(response.optInt("next_season"));
-                                serial.setNextEpisode(response.optInt("next_episode"));
+                                String nextEpisodeDateString = response.optString("next_episode_date", null);
+                                long nextEpisodeDateMs = parseDateString(nextEpisodeDateString, showTime);
+                                serial.setNextEpisodeDateMs(nextEpisodeDateMs);
+                                if (nextEpisodeDateMs != 0) {
+                                    serial.setNextSeason(response.optInt("next_season"));
+                                    serial.setNextEpisode(response.optInt("next_episode"));
+                                }
                             }
+                            JsonDatabase.saveSerial(context, serial);
+                            checkNotificationData(context, serial);
                         }
-                        JsonDatabase.saveSerial(context, serial);
-                        checkNotificationData(context, serial);
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(context, "Error: " + error.toString(), Toast.LENGTH_LONG).show();
+                            Log.d(TAG, error.toString());
+                        }
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, "Error: " + error.toString(), Toast.LENGTH_LONG).show();
-                        Log.d("Error.Response", error.toString());
-                    }
-                }
-        );
-        getRequest.setRetryPolicy(new DefaultRetryPolicy(
-                Constants.DEFAULT_REQUEST_TIMEOUT,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(getRequest);
+            );
+            getRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    Constants.DEFAULT_REQUEST_TIMEOUT,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            queue.add(getRequest);
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, "Can't encode serial name (" + serial.getName() + ") to URL!");
+        }
+
     }
 
     private static long parseDateString(String dateString, String showTimeString) {
@@ -233,15 +243,15 @@ public class Notificator {
                     }
                     // day
                     day = word;
-                    //Log.d(Constants.TAG, "day: " + word);
+                    //Log.d(TAG, "day: " + word);
                 } else if (word.matches("(?i).*[a-zа-я].*")) {
                     // Mouth
                     mouth = getMouthNumber(word);
-                    //Log.d(Constants.TAG, "mouth: " + word + " - " + word.matches("(?i).*[a-zа-я].*"));
+                    //Log.d(TAG, "mouth: " + word + " - " + word.matches("(?i).*[a-zа-я].*"));
                 } else if (length == 4 && word.matches("[0-9]+")) {
                     //year
                     year = word;
-                    //Log.d(Constants.TAG, "year: " + word + " - " + word.matches("[0-9]+"));
+                    //Log.d(TAG, "year: " + word + " - " + word.matches("[0-9]+"));
                 }
             }
 
@@ -265,8 +275,8 @@ public class Notificator {
                     Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
                     calendar.setTime(dateFormat.parse(dateString));
 
-                    //Log.d(Constants.TAG, "UTC time:   " + calendar.getTimeInMillis());
-                    //Log.d(Constants.TAG, "Local time: " + (calendar.getTimeInMillis() + TimeZone.getDefault().getRawOffset()));
+                    //Log.d(TAG, "UTC time:   " + calendar.getTimeInMillis());
+                    //Log.d(TAG, "Local time: " + (calendar.getTimeInMillis() + TimeZone.getDefault().getRawOffset()));
                     return calendar.getTimeInMillis() + TimeZone.getDefault().getRawOffset();
                 } catch (ParseException e) {
                     e.printStackTrace();

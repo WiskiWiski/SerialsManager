@@ -1,12 +1,15 @@
 package by.wiskiw.serialsmanager.objects;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Arrays;
 
 /**
  * Created by WiskiW on 25.12.2016.
  */
 
-public class Serial {
+public class Serial implements Parcelable {
     private String name;
     private int eps;
     private int season;
@@ -18,6 +21,7 @@ public class Serial {
     private int nextEpisode;
     private int nextSeason;
     private int notificationId;
+    private boolean requestForNotif;
 
     public Serial(String name) {
         this.name = name;
@@ -46,6 +50,14 @@ public class Serial {
 
     public void rename(String newName) {
         this.name = newName;
+    }
+
+    public boolean isRequestForNotif() {
+        return requestForNotif;
+    }
+
+    public void setRequestForNotif(boolean requestForNotif) {
+        this.requestForNotif = requestForNotif;
     }
 
     public String getNote() {
@@ -88,7 +100,7 @@ public class Serial {
         this.season = season;
     }
 
-    public void addSeason(){
+    public void addSeason() {
         season++;
         episode = 1;
     }
@@ -101,7 +113,7 @@ public class Serial {
         this.episode = episode;
     }
 
-    public void addEpisode(){
+    public void addEpisode() {
         if (episode >= eps && eps != 0) {
             episode = 0;
             addSeason();
@@ -148,6 +160,7 @@ public class Serial {
         nextEpisodeDateMs = -1;
         season = 1;
         episode = 1;
+        requestForNotif = true;
     }
 
     @Override
@@ -160,5 +173,30 @@ public class Serial {
                 "identityLevel:" + identityLevel
         };
         return Arrays.toString(toString);
+    }
+
+    private int mData;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(mData);
+    }
+
+    public static final Parcelable.Creator<Serial> CREATOR = new Parcelable.Creator<Serial>() {
+        public Serial createFromParcel(Parcel in) {
+            return new Serial(in);
+        }
+
+        public Serial[] newArray(int size) {
+            return new Serial[size];
+        }
+    };
+
+    private Serial(Parcel in) {
+        mData = in.readInt();
     }
 }
