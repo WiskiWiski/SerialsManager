@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.activities;
+package by.wiskiw.serialsmanager.settings.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;

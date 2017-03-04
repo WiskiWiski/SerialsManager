@@ -14,11 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import by.wiskiw.serialsmanager.fragments.SerialRootFragment;
 import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.Utils;
 import by.wiskiw.serialsmanager.fragments.MainFragment;
+import by.wiskiw.serialsmanager.settings.activity.SettingsActivity;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 import by.wiskiw.serialsmanager.storage.sql.SqlDatabaseManager;
 
@@ -53,13 +53,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         setMainFragment();
-        //showEditDialog(); // DEBUG
-    }
-
-    private void showEditDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        SerialRootFragment serialRootFragment = new SerialRootFragment();
-        serialRootFragment.show(fm, "fragment_edit_name");
     }
 
     private void setMainFragment() {
@@ -83,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.menu_plus:
                 if (mainFragment != null) {
-                    mainFragment.addSerial();
+                    mainFragment.addNewSerial();
                 }
                 break;
         }

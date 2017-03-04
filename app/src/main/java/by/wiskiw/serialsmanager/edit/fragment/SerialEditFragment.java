@@ -1,5 +1,6 @@
-package by.wiskiw.serialsmanager.fragments;
+package by.wiskiw.serialsmanager.edit.fragment;
 
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,39 +10,56 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import by.wiskiw.serialsmanager.R;
-import me.relex.circleindicator.CircleIndicator;
+import by.wiskiw.serialsmanager.edit.fragment.tabs.EditTabFragment;
+import by.wiskiw.serialsmanager.edit.fragment.tabs.InfoTabFragment;
+import by.wiskiw.serialsmanager.objects.Serial;
 
 /**
  * Created by WiskiW on 27.12.2016.
  */
 
-public class SerialRootFragment extends DialogFragment {
+public class SerialEditFragment extends DialogFragment {
 
-    ViewPager viewPager;
-    CircleIndicator indicator;
+    private static final String BUNDLE_SERIAL = "serial_tag";
 
-    TextView cancelButton;
-    TextView deleteButton;
-    TextView saveButton;
+    private Serial serial;
+    private  ViewPager viewPager;
+    private  TextView cancelButton;
+    private  TextView deleteButton;
+    private  TextView saveButton;
+    private EditFragmentListener editFragmentListener;
 
-    public SerialRootFragment() {
-
+    public SerialEditFragment() {
     }
 
 
-    public static SerialRootFragment newInstance(String title) {
-        SerialRootFragment frag = new SerialRootFragment();
-        Bundle args = new Bundle();
-        args.putString("title", title);
-        frag.setArguments(args);
-        return frag;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(BUNDLE_SERIAL)) {
+            serial = getArguments().getParcelable(BUNDLE_SERIAL);
+        } else {
+            throw new IllegalArgumentException("Must be created through newInstance(...)");
+        }
+    }
+
+    public static SerialEditFragment newInstance(Serial serial) {
+        final SerialEditFragment fragment = new SerialEditFragment();
+        final Bundle arguments = new Bundle();
+        arguments.putParcelable(BUNDLE_SERIAL, serial);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
+
+    public void setEditFragmentListener(EditFragmentListener editFragmentListener) {
+        this.editFragmentListener = editFragmentListener;
     }
 
     @Override
@@ -50,7 +68,6 @@ public class SerialRootFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.dialog_root_fragment, container, false);
 
         viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-        indicator = (CircleIndicator) rootView.findViewById(R.id.indicator);
 
         cancelButton = (TextView) rootView.findViewById(R.id.cancelButton);
         deleteButton = (TextView) rootView.findViewById(R.id.deleteButton);
@@ -59,15 +76,6 @@ public class SerialRootFragment extends DialogFragment {
 
 
         setupViewPager(viewPager);
-        indicator.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int item = viewPager.getCurrentItem()==0?1:0;
-                viewPager.setCurrentItem(item);
-            }
-        });
-
-
         return rootView;
     }
 
@@ -82,14 +90,14 @@ public class SerialRootFragment extends DialogFragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                editFragmentListener.onDelete(serial);
             }
         });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                editFragmentListener.onSave(serial);
             }
         });
     }
@@ -99,8 +107,6 @@ public class SerialRootFragment extends DialogFragment {
         adapter.addFragment(new EditTabFragment());
         adapter.addFragment(new InfoTabFragment());
         viewPager.setAdapter(adapter);
-        indicator.setViewPager(viewPager);
-        adapter.registerDataSetObserver(indicator.getDataSetObserver());
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

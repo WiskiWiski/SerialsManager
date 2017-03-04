@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.fragments;
+package by.wiskiw.serialsmanager.edit.fragment.tabs;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
