@@ -36,7 +36,7 @@ public class AdManager {
     private static final int DEFAULT_AD_ROW_INDEX = 6;
     private static final int DEFAULT_SHOW_AD_EVERY_CLICK_NUMB = 8;
 
-    private static final String TEST_ID_NEXUS_5 = "8CB3A425BBC68D897028EBCE4C4BB2FB";
+    private static final String TEST_ID_NEXUS_5 = "57BEE3366E891C70D131E115EE2667B6";
     private static final String TEST_ID_GALAXY_NEXUS = "7923C98F4CEED9E71AC979DD1A212C74";
     private static final String TEST_ID_I9070 = "6096BCF16BFA2B9208A95443591F0569";
 

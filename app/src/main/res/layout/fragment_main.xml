@@ -1,19 +1,38 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/root_container"
     android:background="@color/mainBackground"
     tools:context=".main.fragments.MainFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:descendantFocusability="blocksDescendants"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:descendantFocusability="blocksDescendants"
         android:divider="@android:color/transparent"
         android:paddingBottom="@dimen/card_vertical_margin"
-        android:paddingTop="@dimen/card_vertical_margin"/>
+        android:paddingTop="@dimen/card_vertical_margin"
+        tools:visibility="gone"
+        tools:listitem="@layout/serial_item"/>
+
+    <FrameLayout
+        android:id="@+id/empty_data_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.8"
+        android:clickable="false"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/not_one_item"/>
+
+    </FrameLayout>
 </FrameLayout>

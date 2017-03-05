@@ -2,9 +2,7 @@ package by.wiskiw.serialsmanager.main.fragments.recyclerview;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +38,15 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private OnSerialLongClickListener onSerialLongClickListener;
     private OnSerialClickListener onSerialClickListener;
+    private OnSizeChangedListener onSizeChangedListener;
 
-    public SerialListAdapter(Context context, List<Serial> serialsList) {
+    public SerialListAdapter(Context context) {
         this.context = context;
+    }
+
+    public void setSerialsList(List<Serial> serialsList) {
         this.serialsList = serialsList;
+        returnNewSize();
     }
 
     public void setAdView(NativeExpressAdView adView, int adRow) {
@@ -192,6 +195,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         //notifyItemInserted(getPosWithAd(pos));
         notifyItemRangeInserted(getPosWithAd(pos), getItemCount() - n);
         scrollTo(getPosWithAd(pos));
+        returnNewSize();
     }
 
     public void updateSerialView(int pos, Serial serial) {
@@ -218,6 +222,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else {
             notifyItemRangeRemoved(pos, 1);
         }
+        returnNewSize();
     }
 
     private int getAlphabeticalIndex(Serial serial) {
@@ -240,6 +245,12 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return index;
     }
 
+    private void returnNewSize(){
+        if (onSizeChangedListener != null){
+            onSizeChangedListener.onSizeChanged(getItemCount());
+        }
+    }
+
     public void setOnSerialLongClickListener(OnSerialLongClickListener onSerialLongClickListener) {
         this.onSerialLongClickListener = onSerialLongClickListener;
     }
@@ -254,6 +265,14 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public interface OnSerialClickListener {
         void onClick(int position, Serial serial); // position - позиция в Recycler View (с учетом рекламы)
+    }
+
+    public void setOnSizeChangedListener(OnSizeChangedListener onSizeChangedListener) {
+        this.onSizeChangedListener = onSizeChangedListener;
+    }
+
+    public interface OnSizeChangedListener {
+        void onSizeChanged(int recyclerViewSize);
     }
 
 }

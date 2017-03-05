@@ -8,9 +8,11 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -18,6 +20,7 @@ import com.google.android.gms.ads.NativeExpressAdView;
 
 import java.util.List;
 
+import by.wiskiw.serialsmanager.App;
 import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.Utils;
@@ -37,6 +40,7 @@ public class MainFragment extends Fragment {
     private NativeExpressAdView adView;
     private SerialListAdapter serialListAdapter;
 
+    private FrameLayout emptyDataContainer;
     private RecyclerView recyclerView;
 
 
@@ -50,6 +54,14 @@ public class MainFragment extends Fragment {
         Context context = getContext();
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        emptyDataContainer = (FrameLayout) rootView.findViewById(R.id.empty_data_container);
+        emptyDataContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNewSerial();
+            }
+        });
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -60,61 +72,72 @@ public class MainFragment extends Fragment {
 
     private void fillRecyclerView(final Context context) {
         List<Serial> serialList = JsonDatabase.getSerials(context);
-        if (serialList.size() == 0 && Utils.firstStart) {
-            // If serial list is empty
-            addNewSerial();
-        } else {
-            serialListAdapter = new SerialListAdapter(context, serialList);
-            serialListAdapter.setOnSerialLongClickListener(new SerialListAdapter.OnSerialLongClickListener() {
-                @Override
-                public void onLongClick(final int position, Serial serial) {
-                    String title = context.getString(R.string.dialog_title_edit);
-                    SerialEditFragment serialEditFragment =
-                            SerialEditFragment.show(getChildFragmentManager(), title, serial);
-                    serialEditFragment.setOnEditListener(new SerialEditFragment.OnEditListener() {
-                        @Override
-                        public void onEdit(Serial oldSerial, Serial newSerial) {
-                            boolean requestNotifData = false;
-                            if (!oldSerial.getName().equals(newSerial.getName())) {
-                                // Serial renamed
-                                JsonDatabase.renameSerial(context, oldSerial, newSerial);
-                                FirebaseDatabase.renameSerial(context, oldSerial, newSerial);
-                                serialListAdapter.renameSerialView(position, newSerial);
-                                newSerial.resetNotificationData();
-                                requestNotifData = true;
-                            } else {
-                                JsonDatabase.saveSerial(context, newSerial);
-                                FirebaseDatabase.saveSerial(context, newSerial);
-                                serialListAdapter.updateSerialView(position, newSerial);
-                            }
-                            if (oldSerial.getEpisode() != newSerial.getEpisode() ||
-                                    oldSerial.getSeason() != newSerial.getSeason()) {
-                                // Serial's episode/season changed
-                                requestNotifData = true;
-                            }
-                            if (requestNotifData) {
-                                Notificator.checkNotificationData(context, newSerial);
-                            }
-
-                        }
-                    });
-                    serialEditFragment.setOnDeleteListener(new SerialEditFragment.OnDeleteListener() {
-                        @Override
-                        public void onDelete(Serial serial) {
-                            serialListAdapter.removeSerialView(position);
-                            JsonDatabase.deleteSerial(context, serial);
-                            FirebaseDatabase.deleteSerial(context, serial);
-                            SAlarmManager.cancelAlarm(context, serial);
-                            AdManager.showDeleteActionAd();
-                        }
-                    });
-
+        serialListAdapter = new SerialListAdapter(context);
+        serialListAdapter.setOnSizeChangedListener(new SerialListAdapter.OnSizeChangedListener() {
+            @Override
+            public void onSizeChanged(int recyclerViewSize) {
+                if (recyclerViewSize > 0){
+                    emptyDataContainer.setVisibility(View.GONE);
+                    emptyDataContainer.setClickable(false);
+                } else  {
+                    if (App.isFirstStart()) {
+                        addNewSerial();
+                    }
+                    emptyDataContainer.setVisibility(View.VISIBLE);
+                    emptyDataContainer.setClickable(true);
                 }
-            });
-            recyclerView.setAdapter(serialListAdapter);
-            if (AdManager.isAdsEnable(context)) {
-                setUpAndLoadNativeExpressAds(context);
             }
+        });
+        serialListAdapter.setSerialsList(serialList);
+        serialListAdapter.setOnSerialLongClickListener(new SerialListAdapter.OnSerialLongClickListener() {
+            @Override
+            public void onLongClick(final int position, Serial serial) {
+                String title = context.getString(R.string.dialog_title_edit);
+                SerialEditFragment serialEditFragment =
+                        SerialEditFragment.show(getChildFragmentManager(), title, serial);
+                serialEditFragment.setOnEditListener(new SerialEditFragment.OnEditListener() {
+                    @Override
+                    public void onEdit(Serial oldSerial, Serial newSerial) {
+                        boolean requestNotifData = false;
+                        if (!oldSerial.getName().equals(newSerial.getName())) {
+                            // Serial renamed
+                            JsonDatabase.renameSerial(context, oldSerial, newSerial);
+                            FirebaseDatabase.renameSerial(context, oldSerial, newSerial);
+                            serialListAdapter.renameSerialView(position, newSerial);
+                            newSerial.resetNotificationData();
+                            requestNotifData = true;
+                        } else {
+                            JsonDatabase.saveSerial(context, newSerial);
+                            FirebaseDatabase.saveSerial(context, newSerial);
+                            serialListAdapter.updateSerialView(position, newSerial);
+                        }
+                        if (oldSerial.getEpisode() != newSerial.getEpisode() ||
+                                oldSerial.getSeason() != newSerial.getSeason()) {
+                            // Serial's episode/season changed
+                            requestNotifData = true;
+                        }
+                        if (requestNotifData) {
+                            Notificator.checkNotificationData(context, newSerial);
+                        }
+
+                    }
+                });
+                serialEditFragment.setOnDeleteListener(new SerialEditFragment.OnDeleteListener() {
+                    @Override
+                    public void onDelete(Serial serial) {
+                        serialListAdapter.removeSerialView(position);
+                        JsonDatabase.deleteSerial(context, serial);
+                        FirebaseDatabase.deleteSerial(context, serial);
+                        SAlarmManager.cancelAlarm(context, serial);
+                        AdManager.showDeleteActionAd();
+                    }
+                });
+
+            }
+        });
+        recyclerView.setAdapter(serialListAdapter);
+        if (AdManager.isAdsEnable(context)) {
+            setUpAndLoadNativeExpressAds(context);
         }
     }
 
