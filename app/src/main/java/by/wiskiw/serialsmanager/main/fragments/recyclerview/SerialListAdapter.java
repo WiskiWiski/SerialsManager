@@ -46,6 +46,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void setSerialsList(List<Serial> serialsList) {
         this.serialsList = serialsList;
+        adRow = -1;
         returnNewSize();
     }
 
@@ -174,6 +175,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private int getPosWithAd(int pos) {
         // Вовзращает позицию в Recycler View с учетом Ad-элемента
+        if (adRow == -1) return pos;
         if (pos >= adRow && pos < serialsList.size()) {
             pos++; // +1 if index after ad row
         }
@@ -182,6 +184,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private int getPosWithoutAd(int pos) {
         // Вовзращает позицию в Serial List вычетая Ad-элемент
+        if (adRow == -1) return pos;
         if (pos >= adRow && pos != 0) {
             pos--; // +1 if index after ad row
         }

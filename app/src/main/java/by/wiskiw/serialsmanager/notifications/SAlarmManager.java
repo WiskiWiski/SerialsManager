@@ -46,7 +46,9 @@ public class SAlarmManager {
         intent.putExtra("notification_id", serial.getNotificationId());
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, serial.getNotificationId(), intent, 0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, timeMs, pendingIntent);
+        alarmManager.set(AlarmManager.RTC, timeMs, pendingIntent);
+        // RTC_WAKEUP - будит из спятчки
+        // RTC - если устроство с выключенным экраном, но не скит
     }
 
     public static void cancelAlarm(Context context, Serial serial) {
