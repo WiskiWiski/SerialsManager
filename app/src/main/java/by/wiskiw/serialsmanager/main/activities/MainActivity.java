@@ -80,10 +80,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_plus:
-                Intent i = new Intent(this, BootService.class);
-                startService(i);
                 if (mainFragment != null) {
-                    //mainFragment.addNewSerial();
+                    mainFragment.addNewSerial();
                 }
                 break;
         }

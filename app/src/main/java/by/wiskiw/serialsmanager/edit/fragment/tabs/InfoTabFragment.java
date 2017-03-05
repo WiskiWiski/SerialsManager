@@ -6,8 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import by.wiskiw.serialsmanager.R;
+import by.wiskiw.serialsmanager.app.Utils;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.objects.Serial;
 
@@ -22,6 +25,11 @@ public class InfoTabFragment extends Fragment {
     private static final String BUNDLE_SERIAL = "serial_tag";
 
     private Serial serial;
+
+    private TextView identityTV;
+    private TextView nextEpisodeTV;
+    private TextView timeTV;
+    private TextView statusTV;
 
     public InfoTabFragment() {
     }
@@ -49,12 +57,24 @@ public class InfoTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.dialog_info_tab, container, false);
+        initViews(rootView);
 
-
+        if (serial != null) {
+            nextEpisodeTV.setText("s" + serial.getNextSeason() + "e" + serial.getNextEpisode());
+            timeTV.setText(String.valueOf(Utils.getDate(serial.getNextEpisodeDateMs())));
+            identityTV.setText(serial.getIdentityLevel() + "%");
+        }
         return rootView;
     }
 
-    public boolean getNotifSwitcher(){
+    private void initViews(View rootView) {
+        identityTV = (TextView) rootView.findViewById(R.id.identity);
+        nextEpisodeTV = (TextView) rootView.findViewById(R.id.next_episode);
+        timeTV = (TextView) rootView.findViewById(R.id.time);
+        statusTV = (TextView) rootView.findViewById(R.id.status);
+    }
+
+    public boolean getNotifSwitcher() {
         return true; // TODO: Complete switcher
     }
 

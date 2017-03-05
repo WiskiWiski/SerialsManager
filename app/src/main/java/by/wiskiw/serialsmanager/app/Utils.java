@@ -32,6 +32,7 @@ public class Utils {
     }
 
     public static String getDate(long ms) {
+        if (ms < 0) return null;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(ms);
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.ROOT);
