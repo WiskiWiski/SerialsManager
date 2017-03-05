@@ -14,13 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import by.wiskiw.serialsmanager.App;
+import by.wiskiw.serialsmanager.app.App;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.main.fragments.MainFragment;
+import by.wiskiw.serialsmanager.notifications.BootService;
 import by.wiskiw.serialsmanager.rate.RateDialog;
-import by.wiskiw.serialsmanager.settings.SettingsHelper;
 import by.wiskiw.serialsmanager.settings.activities.SettingsActivity;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
@@ -80,8 +80,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_plus:
+                Intent i = new Intent(this, BootService.class);
+                startService(i);
                 if (mainFragment != null) {
-                    mainFragment.addNewSerial();
+                    //mainFragment.addNewSerial();
                 }
                 break;
         }

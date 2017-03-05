@@ -1,9 +1,10 @@
-package by.wiskiw.serialsmanager;
+package by.wiskiw.serialsmanager.app;
 
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import by.wiskiw.serialsmanager.BuildConfig;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 

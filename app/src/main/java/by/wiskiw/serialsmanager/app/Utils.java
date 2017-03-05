@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager;
+package by.wiskiw.serialsmanager.app;
 
 import android.content.Context;
 import android.os.Vibrator;
@@ -18,27 +18,24 @@ public class Utils {
 
     private static final String TAG = Constants.TAG + ":Utils";
 
-    public static boolean firstStart;
-
     public static String getDate() {
-        TimeZone timeZone = TimeZone.getTimeZone("UTC");
-        Calendar calendar = Calendar.getInstance(timeZone);
+        // Return UTC
+        Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd.MM.yyyy", new Locale("ru"));
-        dateFormat.setTimeZone(calendar.getTimeZone());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));  // чьё время получаем
         return dateFormat.format(calendar.getTime());
     }
 
     public static boolean isFutureTime(long timeMs){
-        long currentMs = Calendar.getInstance().getTimeInMillis() + TimeZone.getDefault().getRawOffset();
-        //Log.d(Constants.TAG, "currentMs: " + currentMs);
-        return timeMs > currentMs;
+        long currentMs = Calendar.getInstance().getTimeInMillis();
+        return timeMs + TimeZone.getDefault().getRawOffset() > currentMs;
     }
 
     public static String getDate(long ms) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(ms);
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.ROOT);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // чьё время получаем
         return dateFormat.format(calendar.getTime());
     }
 

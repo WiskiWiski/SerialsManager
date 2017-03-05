@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import by.wiskiw.serialsmanager.Analytics;
+import by.wiskiw.serialsmanager.app.Analytics;
 import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.managers.AdManager;

@@ -8,7 +8,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +19,9 @@ import com.google.android.gms.ads.NativeExpressAdView;
 
 import java.util.List;
 
-import by.wiskiw.serialsmanager.App;
+import by.wiskiw.serialsmanager.app.App;
 import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.Utils;
 import by.wiskiw.serialsmanager.main.fragments.recyclerview.SerialListAdapter;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.edit.fragment.SerialEditFragment;

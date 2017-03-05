@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager;
+package by.wiskiw.serialsmanager.app;
 
 import android.content.Context;
 import android.os.Bundle;

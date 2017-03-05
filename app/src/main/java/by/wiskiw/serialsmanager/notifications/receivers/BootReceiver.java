@@ -5,17 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import by.wiskiw.serialsmanager.BootService;
 import by.wiskiw.serialsmanager.defaults.Constants;
-
+import by.wiskiw.serialsmanager.notifications.BootService;
 
 /**
- * Created by WiskiW on 15.12.2016.
+ * Created by WiskiW on 05.03.2017.
  */
 
-public class RestartAlarmsReceiver extends BroadcastReceiver {
+public class BootReceiver extends BroadcastReceiver {
 
-    private static final String TAG = Constants.TAG + ":RestartAlarmsRec";
+    private static final String TAG = Constants.TAG + ":BootReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -30,7 +30,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.Utils;
+import by.wiskiw.serialsmanager.app.Utils;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.main.activities.MainActivity;
 import by.wiskiw.serialsmanager.objects.Serial;
@@ -48,6 +48,7 @@ public class Notificator {
 
     //private static final String SERIAL_CHECK_URL = "http://wiskiw.esy.es/sm/check_serial.php?serial=";
     private static final String SERIAL_CHECK_URL = "https://wiskiw.000webhostapp.com/sm/check_serial.php?serial=";
+    //private static final String SERIAL_CHECK_URL = "https://wiskiw.000webhostapp.com/sm/check_serial_b1.php?serial=";
 
     public static void showNotification(Context context, Intent receiverIntent) {
         Intent notificationIntent = new Intent(context, MainActivity.class);
@@ -191,6 +192,7 @@ public class Notificator {
     }
 
     private static long parseDateString(String dateString, String showTimeString) {
+        // Return UTC time
         if (dateString == null) {
             return 0;
 
@@ -251,13 +253,14 @@ public class Notificator {
                     dateString = showTimeString + " " + day + "." + mouth + "." + year;
 
                     DateFormat dateFormat = new SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.ROOT);
-                    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                     Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
                     calendar.setTime(dateFormat.parse(dateString));
 
                     //Log.d(TAG, "UTC time:   " + calendar.getTimeInMillis());
                     //Log.d(TAG, "Local time: " + (calendar.getTimeInMillis() + TimeZone.getDefault().getRawOffset()));
-                    return calendar.getTimeInMillis() + TimeZone.getDefault().getRawOffset();
+                    //return calendar.getTimeInMillis() + TimeZone.getDefault().getRawOffset();
+                    return calendar.getTimeInMillis();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.Utils;
+import by.wiskiw.serialsmanager.app.Utils;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.settings.SettingsHelper;

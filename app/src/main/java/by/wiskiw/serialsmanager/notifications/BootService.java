@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager;
+package by.wiskiw.serialsmanager.notifications;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.util.Log;
 import java.util.List;
 
 import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.settings.SettingsHelper;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
@@ -29,7 +28,7 @@ public class BootService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         // Reset all alarms here
-        Log.d(TAG, "Successfully started BootService");
+        Log.d(TAG, "BootService has been successfully started");
         Context context = getApplicationContext();
         if (SettingsHelper.isNotificationsEnable(context)) {
             List<Serial> serials = JsonDatabase.getSerials(context);
