@@ -8,7 +8,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,20 +18,21 @@ import com.google.android.gms.ads.NativeExpressAdView;
 
 import java.util.List;
 
-import by.wiskiw.serialsmanager.Notificator;
+import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.Utils;
 import by.wiskiw.serialsmanager.main.fragments.recyclerview.SerialListAdapter;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.edit.fragment.SerialEditFragment;
 import by.wiskiw.serialsmanager.managers.AdManager;
+import by.wiskiw.serialsmanager.notifications.SAlarmManager;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.storage.FirebaseDatabase;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 public class MainFragment extends Fragment {
 
-    private static final String TAG = Constants.TAG;
+    private static final String TAG = Constants.TAG + ":MainFrg";
 
     private NativeExpressAdView adView;
     private SerialListAdapter serialListAdapter;
@@ -57,7 +57,6 @@ public class MainFragment extends Fragment {
 
         return rootView;
     }
-
 
     private void fillRecyclerView(final Context context) {
         List<Serial> serialList = JsonDatabase.getSerials(context);
@@ -105,8 +104,11 @@ public class MainFragment extends Fragment {
                             serialListAdapter.removeSerialView(position);
                             JsonDatabase.deleteSerial(context, serial);
                             FirebaseDatabase.deleteSerial(context, serial);
+                            SAlarmManager.cancelAlarm(context, serial);
+                            AdManager.showDeleteActionAd();
                         }
                     });
+
                 }
             });
             recyclerView.setAdapter(serialListAdapter);
@@ -136,17 +138,19 @@ public class MainFragment extends Fragment {
         });
     }
 
+
     private void setUpAndLoadNativeExpressAds(Context context) {
         adView = new NativeExpressAdView(context);
-        serialListAdapter.setAdView(adView, AdManager.AD_ROW);
+        serialListAdapter.setAdView(adView, AdManager.getAdRowIndex(context));
         // Use a Runnable to ensure that the RecyclerView has been laid out before setting the
         // ad size for the Native Express ad. This allows us to set the Native Express ad's
         // width to match the full width of the RecyclerView.
+        final float scale = getContext().getResources().getDisplayMetrics().density;
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
-                final float scale = getContext().getResources().getDisplayMetrics().density;
                 final CardView cardView = (CardView) recyclerView.findViewById(R.id.card_view);
+                if (cardView == null) return;
                 final int adWidth = cardView.getWidth() - cardView.getPaddingLeft() - cardView.getPaddingRight();
                 AdSize adSize = new AdSize((int) (adWidth / scale), AdManager.RECYCLER_VIEW_AD_HEIGHT);
                 adView.setAdSize(adSize);

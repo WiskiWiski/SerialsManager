@@ -1,6 +1,5 @@
-package by.wiskiw.serialsmanager;
+package by.wiskiw.serialsmanager.notifications;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
-
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -31,11 +29,13 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import by.wiskiw.serialsmanager.main.activities.MainActivity;
+import by.wiskiw.serialsmanager.R;
+import by.wiskiw.serialsmanager.Utils;
 import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.main.activities.MainActivity;
 import by.wiskiw.serialsmanager.objects.Serial;
-import by.wiskiw.serialsmanager.receivers.AlarmBroadcastReceiver;
 import by.wiskiw.serialsmanager.settings.SettingsHelper;
+import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 /**
@@ -44,11 +44,12 @@ import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 public class Notificator {
 
-    private static final String TAG = Constants.TAG;
+    private static final String TAG = Constants.TAG + ":Notificator";
+
     //private static final String SERIAL_CHECK_URL = "http://wiskiw.esy.es/sm/check_serial.php?serial=";
     private static final String SERIAL_CHECK_URL = "https://wiskiw.000webhostapp.com/sm/check_serial.php?serial=";
 
-    public static void createNotification(Context context, Intent receiverIntent) {
+    public static void showNotification(Context context, Intent receiverIntent) {
         Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context,
                 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -93,39 +94,16 @@ public class Notificator {
         notificationManager.notify(notificationId, notification);
     }
 
-    private static void setAlarm(Context context, Serial serial) {
-        long timeMs = serial.getNextEpisodeDateMs();
-        String timeStr = Utils.getDate(timeMs);
-        Log.d(TAG, "Alarm set on " + timeStr + " - " + timeMs);
-        Toast.makeText(context, "Alarm set on " + timeStr, Toast.LENGTH_LONG).show();
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmBroadcastReceiver.class);
-        intent.putExtra("serial_name", serial.getName());
-        intent.putExtra("episode", serial.getNextEpisode());
-        intent.putExtra("season", serial.getNextSeason());
-        intent.putExtra("notification_id", serial.getNotificationId());
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, serial.getNotificationId(), intent, 0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, timeMs, pendingIntent);
-    }
-
-    public static void cancelAlarm(Context context, Serial serial) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, Notificator.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, serial.getNotificationId(), intent, 0);
-        alarmManager.cancel(pendingIntent);
-        Log.d(TAG, "Alarms removed for " + serial.getName());
-    }
-
     public static void checkNotificationData(final Context context, Serial serial) {
         if (!SettingsHelper.isNotificationsEnable(context)) return;
 
+        int minIdentityLvl = PreferencesStorage.getInt(context,
+                Constants.PREFERENCE_MIN_IDENTITY_LVL, Constants.DEFAULT_MIN_IDENTITY_LVL);
         if (serial.getIdentityLevel() == -1) {
             requestNotificationData(context, serial);
-        } else if (serial.getIdentityLevel() < Constants.MIN_IDENTITY_LVL) {
+        } else if (serial.getIdentityLevel() < minIdentityLvl) {
             Log.d(TAG, "Identity level (" + serial.getIdentityLevel()
-                    + "%) for '" + serial.getName() + "' is too low, alarm didn't created");
+                    + "%) for '" + serial.getName() + "' is's too low, alarm didn't created");
         } else if (serial.getNextEpisodeDateMs() == -1) {
             requestNotificationData(context, serial);
         } else {
@@ -141,18 +119,18 @@ public class Notificator {
                         "'(" + serial.getIdentityLevel() + "%) s" + nextSeasonNum + "e" + nextEpisodeNum);
                 if (nextSeasonNum == 0 || nextEpisodeNum == 0) {
                     // TODO: Создать Alarm без номера серии
-                    setAlarm(context, serial);
+                    SAlarmManager.setAlarm(context, serial);
                 } else {
                     // TODO: Создаем Alarm с номером серии и сезоном
                     int seasonNum = serial.getSeason();
                     int episodeNum = serial.getEpisode();
                     if (nextEpisodeNum != 1) {
                         if (nextSeasonNum == seasonNum && nextEpisodeNum == episodeNum + 1) {
-                            setAlarm(context, serial);
+                            SAlarmManager.setAlarm(context, serial);
                         }
                     } else if (nextSeasonNum == seasonNum + 1 || nextSeasonNum == seasonNum) {
                         // Следующая серия - начало сезона
-                        setAlarm(context, serial);
+                        SAlarmManager.setAlarm(context, serial);
                     }
                 }
             } else {
@@ -175,7 +153,9 @@ public class Notificator {
                         @Override
                         public void onResponse(JSONObject response) {
                             serial.setIdentityLevel(response.optInt("identity", 0));
-                            if (serial.getIdentityLevel() >= Constants.MIN_IDENTITY_LVL) {
+                            int minIdentityLvl = PreferencesStorage.getInt(context,
+                                    Constants.PREFERENCE_MIN_IDENTITY_LVL, Constants.DEFAULT_MIN_IDENTITY_LVL);
+                            if (serial.getIdentityLevel() >= minIdentityLvl) {
                                 String showTime = response.optString("show_time", null);
                                 //serial.setShowTime(response.optString("show_time", null));
 

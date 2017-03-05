@@ -14,16 +14,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import by.wiskiw.serialsmanager.App;
+import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.Utils;
 import by.wiskiw.serialsmanager.main.fragments.MainFragment;
+import by.wiskiw.serialsmanager.rate.RateDialog;
+import by.wiskiw.serialsmanager.settings.SettingsHelper;
 import by.wiskiw.serialsmanager.settings.activities.SettingsActivity;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
-import by.wiskiw.serialsmanager.storage.sql.SqlDatabaseManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = Constants.TAG + ":MainActv";
 
     protected MainFragment mainFragment;
 
@@ -41,16 +45,16 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if (App.getLaunchNumb() < 3) {
+            Menu navMenu = navigationView.getMenu();
+            navMenu.findItem(R.id.nav_rate_app).setVisible(false);
+        }
 
 
         PreferencesStorage.syncWithRemoteConfig(this);
         AdManager.prepareAd(this);
-        Utils.fetchOldFag(this);
-        if (Utils.checkFirstStart(this)) {
-            SqlDatabaseManager.updateToJson(this);
-        }
 
         setMainFragment();
     }
@@ -72,6 +76,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Toolbar menu here
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_plus:
@@ -85,15 +90,16 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Navigation Drawer menu here
         int id = item.getItemId();
 
         if (id == R.id.nav_serials) {
             setMainFragment();
         } else if (id == R.id.nav_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
         } else if (id == R.id.nav_rate_app) {
-            Utils.rateThisApp(this);
+            RateDialog.createDialog(this);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);

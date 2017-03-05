@@ -24,6 +24,8 @@ import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
 public class JsonDatabase {
 
+    private static final String TAG = Constants.TAG + ":JsonDatabase";
+
     public static boolean isSerialExist(Context context, Serial newSerial) {
         List<Serial> serialList = getSerials(context);
         String newSerialName = newSerial.getName().toLowerCase().trim();

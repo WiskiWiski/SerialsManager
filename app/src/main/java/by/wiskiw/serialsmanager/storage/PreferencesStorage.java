@@ -15,13 +15,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import by.wiskiw.serialsmanager.BuildConfig;
-import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.managers.AdManager;
 
 /**
  * Created by WiskiW on 25.06.2016.
  */
+
 public class PreferencesStorage {
+
+    private static final String TAG = Constants.TAG + ":PrefsStorage";
 
     private static SharedPreferences sharedpreferences = null;
     private static JSONObject gJsonObject = null;
@@ -72,7 +75,7 @@ public class PreferencesStorage {
 
     public static JSONObject getJson(Context context) {
         if (gJsonObject == null) {
-            String jsonString = getString(context, context.getString(R.string.pref_tag_json), null);
+            String jsonString = getString(context, Constants.PREFERENCE_JSON, null);
             if (jsonString != null && !jsonString.isEmpty()) {
                 try {
                     gJsonObject = new JSONObject(jsonString);
@@ -91,7 +94,7 @@ public class PreferencesStorage {
         gJsonObject = jsonObject;
         getSharedPreferences(context);
         sharedpreferences.edit()
-                .putString(context.getString(R.string.pref_tag_json), jsonObject.toString())
+                .putString(Constants.PREFERENCE_JSON, jsonObject.toString())
                 .apply();
     }
 
@@ -139,7 +142,7 @@ public class PreferencesStorage {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Log.d(Constants.TAG, "Firebase Remote Config synchronization complete (Fetch Succeeded).");
+                                Log.d(TAG, "Firebase Remote Config synchronization complete (Fetch Succeeded).");
                                 // Once the config is successfully fetched it must be activated before newly fetched
                                 // values are returned.
                                 firebaseRemoteConfig.activateFetched();
@@ -147,16 +150,20 @@ public class PreferencesStorage {
 
                                 getSharedPreferences(context);
                                 sharedpreferences.edit()
-                                        .putBoolean(Constants.PREFERENCE_ADS_ENABLE,
-                                                firebaseRemoteConfig.getBoolean(Constants.PREFERENCE_ADS_ENABLE))
+                                        .putBoolean(AdManager.PREFERENCE_ADS_ENABLE,
+                                                firebaseRemoteConfig.getBoolean(AdManager.PREFERENCE_ADS_ENABLE))
                                         .putBoolean(Constants.PREFERENCE_SEND_SERIALS,
                                                 firebaseRemoteConfig.getBoolean(Constants.PREFERENCE_SEND_SERIALS))
-                                        .putString(Constants.PREFERENCE_CONTACT_EMAIL,
-                                                firebaseRemoteConfig.getString(Constants.PREFERENCE_CONTACT_EMAIL))
+                                        .putInt(AdManager.PREFERENCE_SHOW_AD_EVERY_CLICK_NUMB,
+                                                (int) firebaseRemoteConfig.getLong(AdManager.PREFERENCE_SHOW_AD_EVERY_CLICK_NUMB))
+                                        .putInt(AdManager.PREFERENCE_AD_ROW_INDEX,
+                                                (int) firebaseRemoteConfig.getLong(AdManager.PREFERENCE_AD_ROW_INDEX))
+                                        .putInt(Constants.PREFERENCE_MIN_IDENTITY_LVL,
+                                                (int) firebaseRemoteConfig.getLong(Constants.PREFERENCE_MIN_IDENTITY_LVL))
                                         .apply();
 
                             } else {
-                                Log.d(Constants.TAG, "Firebase Remote Config synchronization failed (Fetch failed).");
+                                Log.d(TAG, "Firebase Remote Config synchronization failed (Fetch failed).");
                             }
                         }
                     });

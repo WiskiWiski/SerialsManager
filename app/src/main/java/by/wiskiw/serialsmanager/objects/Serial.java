@@ -10,6 +10,7 @@ import java.util.Arrays;
  */
 
 public class Serial implements Parcelable {
+
     private String name;
     private int eps;
     private int season;
@@ -24,11 +25,12 @@ public class Serial implements Parcelable {
     private boolean requestForNotif;
 
     public Serial(String name) {
-        this.name = name;
         defaultInit();
+        this.name = name;
     }
 
     public Serial(String name, int episode, int season, int eps, String note) {
+        defaultInit();
         this.name = name;
         this.episode = episode;
         this.season = season;
@@ -161,6 +163,7 @@ public class Serial implements Parcelable {
         season = 1;
         episode = 1;
         requestForNotif = true;
+        resetNotificationData();
     }
 
     @Override

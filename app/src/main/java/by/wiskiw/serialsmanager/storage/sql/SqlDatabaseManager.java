@@ -8,6 +8,7 @@ import android.util.Log;
 import java.io.File;
 import java.util.ArrayList;
 
+import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.defaults.Constants;
@@ -21,16 +22,18 @@ import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 public class SqlDatabaseManager {
 
+    private static final String TAG = Constants.TAG + ":SqlDBManager";
+
     private static ArrayList<Serial> getSerials(SQLiteDatabase mSqLiteDatabase) {
         ArrayList<Serial> SERIALS = new ArrayList<>();
-        Cursor c = mSqLiteDatabase.query(DataBaseHelper.DATABASE_TABLE, null, null, null, null, null, null);
+        Cursor c = mSqLiteDatabase.query(DatabaseHelper.DATABASE_TABLE, null, null, null, null, null, null);
         if (c.moveToFirst()) {
             do {
-                String serialName = c.getString(c.getColumnIndex(DataBaseHelper.SERIAL_COLUMN));
-                int episode = c.getInt(c.getColumnIndex(DataBaseHelper.EPISODE_COLUMN));
-                int season = c.getInt(c.getColumnIndex(DataBaseHelper.SEASON_COLUMN));
-                int episodePerSeason = c.getInt(c.getColumnIndex(DataBaseHelper.EPISODE_PER_SEASON_COLUMN));
-                String note = c.getString(c.getColumnIndex(DataBaseHelper.SERIAL_NOTE_COLUMN));
+                String serialName = c.getString(c.getColumnIndex(DatabaseHelper.SERIAL_COLUMN));
+                int episode = c.getInt(c.getColumnIndex(DatabaseHelper.EPISODE_COLUMN));
+                int season = c.getInt(c.getColumnIndex(DatabaseHelper.SEASON_COLUMN));
+                int episodePerSeason = c.getInt(c.getColumnIndex(DatabaseHelper.EPISODE_PER_SEASON_COLUMN));
+                String note = c.getString(c.getColumnIndex(DatabaseHelper.SERIAL_NOTE_COLUMN));
 
                 Serial serial = new Serial(serialName, episode, season, episodePerSeason, note);
                 SERIALS.add(serial);
@@ -53,7 +56,7 @@ public class SqlDatabaseManager {
 
     public static boolean updateToJson(Context context) {
         if (isSqlDatabaseExist(context)) {
-            SQLiteDatabase mSqLiteDatabase = new DataBaseHelper(context).getReadableDatabase();
+            SQLiteDatabase mSqLiteDatabase = new DatabaseHelper(context).getReadableDatabase();
             ArrayList<Serial> savedSerials = getSerials(mSqLiteDatabase);
             if (savedSerials != null && savedSerials.size() > 0) {
                 int size = savedSerials.size();
@@ -64,10 +67,10 @@ public class SqlDatabaseManager {
             }
             context.deleteDatabase(Constants.OLD_DATABASE_NAME);
 
-            PreferencesStorage.saveInt(context, Constants.PREFERENCE_OLD_FAG_LVL, 3);
+            PreferencesStorage.saveInt(context, Constants.PREFERENCE_LAUNCH_COUNTER, 3);
             AdManager.disableAds(context);
         } else {
-            Log.d(Constants.TAG, "not exist");
+            Log.d(TAG, "not exist");
         }
         return false;
     }

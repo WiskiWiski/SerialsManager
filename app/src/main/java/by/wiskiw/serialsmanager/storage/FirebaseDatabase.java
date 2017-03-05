@@ -2,7 +2,6 @@ package by.wiskiw.serialsmanager.storage;
 
 import android.content.Context;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.Locale;
@@ -17,6 +16,8 @@ import by.wiskiw.serialsmanager.objects.Serial;
  */
 
 public class FirebaseDatabase {
+
+    private static final String TAG = Constants.TAG + ":FirebaseDB";
 
     private static DatabaseReference firebaseDatabase;
 

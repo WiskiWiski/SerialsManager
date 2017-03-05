@@ -12,6 +12,8 @@ import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
 public class SettingsHelper {
 
+    private static final String TAG = Constants.TAG + ":SettingsHelper";
+
     public enum ShortingOrder {
         ALPHABET, DATE
     }

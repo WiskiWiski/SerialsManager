@@ -8,9 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import by.wiskiw.serialsmanager.R;
+import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.settings.fragments.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    private static final String TAG = Constants.TAG + ":SettingsActv";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +21,6 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         setupToolbar();
         setSettingsFragment(new SettingsFragment(), false, false);
-
     }
 
     private void setupToolbar() {

@@ -21,13 +21,13 @@ import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.settings.SettingsHelper;
 
-import static by.wiskiw.serialsmanager.defaults.Constants.TAG;
-
 /**
  * Created by WiskiW on 25.12.2016.
  */
 
 public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final String TAG = Constants.TAG + ":SerialRVAdapter";
 
     private static final int SERIAL_ITEM_VIEW_TYPE = 0;
     private static final int NATIVE_EXPRESS_AD_VIEW_TYPE = 1;
@@ -171,7 +171,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private int getPosWithAd(int pos) {
         // Вовзращает позицию в Recycler View с учетом Ad-элемента
-        if (pos >= adRow) {
+        if (pos >= adRow && pos < serialsList.size()) {
             pos++; // +1 if index after ad row
         }
         return pos;
@@ -179,7 +179,7 @@ public class SerialListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private int getPosWithoutAd(int pos) {
         // Вовзращает позицию в Serial List вычетая Ad-элемент
-        if (pos >= adRow) {
+        if (pos >= adRow && pos != 0) {
             pos--; // +1 if index after ad row
         }
         return pos;

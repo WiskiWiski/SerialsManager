@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import by.wiskiw.serialsmanager.BuildConfig;
 import by.wiskiw.serialsmanager.R;
+import by.wiskiw.serialsmanager.defaults.Constants;
 
 /**
  * Created by WiskiW on 26.12.2016.
@@ -17,7 +18,9 @@ import by.wiskiw.serialsmanager.R;
 public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener{
 
-    boolean showed1;
+    private static final String TAG = Constants.TAG + ":SettingsFrg";
+
+    private boolean showed1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class SettingsFragment extends PreferenceFragment
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         String sortingOrderKey = getString(R.string.pref_screen_key_sorting_order);
         if (key.equals(sortingOrderKey)) {
+
             if (!showed1) {
                 Toast.makeText(getActivity().getApplicationContext(),
                         getString(R.string.toast_apply_after_restart), Toast.LENGTH_LONG).show();

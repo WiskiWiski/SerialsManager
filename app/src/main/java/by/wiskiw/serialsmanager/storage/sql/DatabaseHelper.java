@@ -11,7 +11,11 @@ import by.wiskiw.serialsmanager.defaults.Constants;
 /**
  * Created by WiskiW on 16.10.2015.
  */
-public class DataBaseHelper extends SQLiteOpenHelper {
+
+class DatabaseHelper extends SQLiteOpenHelper {
+
+    private static final String TAG = Constants.TAG + ":SqlDBHelper";
+
     static final String DATABASE_TABLE = "main";
     private static final int DATABASE_VERSION = 4;
 
@@ -32,13 +36,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + EPISODE_PER_SEASON_COLUMN + " TEXT"
             + ");";
 
-    DataBaseHelper(Context context) {
+    DatabaseHelper(Context context) {
         super(context, Constants.OLD_DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(Constants.TAG, "Creating database: " + Constants.OLD_DATABASE_NAME);
+        Log.d(TAG, "Creating database: " + Constants.OLD_DATABASE_NAME);
         db.execSQL(DATABASE_CREATE_SCRIPT);
     }
 

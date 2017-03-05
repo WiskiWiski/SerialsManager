@@ -41,10 +41,6 @@
     <string name="super_secret_password" translatable="false">PleaseRemoveAd</string>
 
 
-    <!-- Shared Preference Tags -->
-    <string name="pref_tag_json" translatable="false">ref_tag_json</string>
-    <string name="pref_tag_first_start" translatable="false">pref_tag_first_start</string>
-    
     <!-- Preference Screen -->
     <string name="pref_screen_title_sorting_order">Sorting Order</string>
     <string name="pref_screen_summary_sorting_order">Select sort method</string>
@@ -65,5 +61,13 @@
     <string name="nav_serials">Serials</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_rate_app">Leave Rate</string>
+
+    <!-- ===  Rate Dialog === -->
+    <string name="rate_dialog_send_activity_title">Sending Feedback…</string>
+    <string name="rate_dialog_msg_topic" translatable="false">Serials Manager: rate</string>
+    <string name="rate_dialog_rate_button">Send</string>
+    <string name="rate_dialog_cancel_button" translatable="false">@android:string/cancel</string>
+    <string name="rate_dialog_title">Rate App</string>
+    <string name="rate_dialog_message_hint">Comment</string>
 
 </resources>

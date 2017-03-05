@@ -26,9 +26,10 @@ import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 public class SerialEditFragment extends DialogFragment {
 
+    private static final String TAG = Constants.TAG + ":EditFragment";
+
     private static final String BUNDLE_SERIAL = "serial_tag";
     private static final String BUNDLE_TITLE = "title_tag";
-    private static final String TAG = Constants.TAG;
 
     private Serial serial;
     private String dialogTitle;

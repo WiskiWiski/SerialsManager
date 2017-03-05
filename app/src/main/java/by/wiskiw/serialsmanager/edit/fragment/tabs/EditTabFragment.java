@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import by.wiskiw.serialsmanager.R;
+import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.objects.Serial;
 
 /**
@@ -17,6 +18,8 @@ import by.wiskiw.serialsmanager.objects.Serial;
  */
 
 public class EditTabFragment extends Fragment {
+
+    private static final String TAG = Constants.TAG + ":EditTab";
 
     private static final String BUNDLE_SERIAL = "serial_tag";
 

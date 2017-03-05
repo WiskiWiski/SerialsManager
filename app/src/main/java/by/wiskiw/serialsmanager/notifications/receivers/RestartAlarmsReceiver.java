@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.receivers;
+package by.wiskiw.serialsmanager.notifications.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +14,9 @@ import by.wiskiw.serialsmanager.defaults.Constants;
  */
 
 public class RestartAlarmsReceiver extends BroadcastReceiver {
+
+    private static final String TAG = Constants.TAG + ":RestartAlarmsRec";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
@@ -21,7 +24,7 @@ public class RestartAlarmsReceiver extends BroadcastReceiver {
             Intent i = new Intent(context, BootService.class);
             context.startService(i);
         } else {
-            Log.e(Constants.TAG, "Received unexpected intent " + intent.toString());
+            Log.e(TAG, "Received unexpected intent " + intent.toString());
         }
     }
 }

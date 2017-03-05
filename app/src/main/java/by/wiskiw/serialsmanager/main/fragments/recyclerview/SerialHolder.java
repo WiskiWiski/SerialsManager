@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import by.wiskiw.serialsmanager.Analytics;
-import by.wiskiw.serialsmanager.Notificator;
+import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.objects.Serial;

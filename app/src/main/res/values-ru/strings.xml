@@ -25,4 +25,10 @@
     <string name="toast_apply_after_restart">Изменения вступили в силу после перезапуска</string>
     <string name="pref_screen_title_version">Версия</string>
 
+    <!-- ===  Rate Dialog === -->
+    <string name="rate_dialog_send_activity_title">Отправка отзыва…</string>
+    <string name="rate_dialog_rate_button">Отправить</string>
+    <string name="rate_dialog_title">Оставить отзыв</string>
+    <string name="rate_dialog_message_hint">Напишите свой отзыв</string>
+
 </resources>

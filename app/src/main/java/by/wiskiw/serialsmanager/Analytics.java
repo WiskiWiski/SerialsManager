@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.objects.Serial;
 
 /**
@@ -12,6 +13,8 @@ import by.wiskiw.serialsmanager.objects.Serial;
  */
 
 public class Analytics {
+
+    private static final String TAG = Constants.TAG + ":Analytics";
 
     private static FirebaseAnalytics mFirebaseAnalytics;
 
