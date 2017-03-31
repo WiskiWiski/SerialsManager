@@ -21,8 +21,7 @@ public class Serial implements Parcelable {
     private long nextEpisodeDateMs;
     private int nextEpisode;
     private int nextSeason;
-    private int notificationId;
-    private boolean requestForNotif;
+    private boolean notificationsEnable;
 
     public Serial(String name) {
         defaultInit();
@@ -54,12 +53,12 @@ public class Serial implements Parcelable {
         this.name = newName;
     }
 
-    public boolean isRequestForNotif() {
-        return requestForNotif;
+    public boolean isNotificationsEnable() {
+        return notificationsEnable;
     }
 
-    public void setRequestForNotif(boolean requestForNotif) {
-        this.requestForNotif = requestForNotif;
+    public void enableNotifications(boolean bool) {
+        this.notificationsEnable = bool;
     }
 
     public String getNote() {
@@ -140,11 +139,7 @@ public class Serial implements Parcelable {
     }
 
     public int getNotificationId() {
-        return notificationId;
-    }
-
-    public void setNotificationId(int notificationId) {
-        this.notificationId = notificationId;
+        return (int) (nextEpisodeDateMs / 100000);
     }
 
     public String getName() {
@@ -154,7 +149,6 @@ public class Serial implements Parcelable {
     public void resetNotificationData() {
         this.identityLevel = -1;
         this.nextEpisodeDateMs = -1;
-        this.notificationId = 0;
     }
 
     private void defaultInit() {
@@ -162,7 +156,7 @@ public class Serial implements Parcelable {
         nextEpisodeDateMs = -1;
         season = 1;
         episode = 1;
-        requestForNotif = true;
+        notificationsEnable = true;
         resetNotificationData();
     }
 

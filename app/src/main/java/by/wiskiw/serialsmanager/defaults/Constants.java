@@ -10,6 +10,7 @@ public class Constants {
     public static final int DEFAULT_VIBRATION = 8;
     public static final int DEFAULT_REQUEST_TIMEOUT = 60000;
 
+    // TODO : Move to JsonDatabase.class
     public static final String JSON_TAG_EPISODE = "episode";
     public static final String JSON_TAG_SEASON = "season";
     public static final String JSON_TAG_EPS = "eps";
@@ -18,7 +19,7 @@ public class Constants {
     public static final String JSON_TAG_NEXT_EPISODE = "next_episode";
     public static final String JSON_TAG_NEXT_EPISODE_DATE = "next_episode_date";
     public static final String JSON_TAG_IDENTITY_LVL = "identity_lvl";
-    public static final String JSON_TAG_NOTIFICATION_ID = "notification_id";
+    public static final String JSON_TAG_NOTIFICATIONS_ENABLE = "notifications_enable";
 
     public static final String PREFERENCE_JSON = "database_json";
     public static final String PREFERENCE_MIN_IDENTITY_LVL = "min_identity_lvl";

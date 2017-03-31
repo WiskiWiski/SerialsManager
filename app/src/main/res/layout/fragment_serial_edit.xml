@@ -111,21 +111,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/dialog_button_cancel_text"
-                android:textColor="@color/colorAccent"/>
-
-            <Button
-                android:id="@+id/deleteButton"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/dialog_button_delete"
-                android:textColor="@color/colorAccent"
-                android:visibility="gone"
-                tools:visibility="visible"/>
+                android:textColor="@color/colorNeutral"/>
 
             <Button
                 android:id="@+id/saveButton"
@@ -137,7 +123,22 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/dialog_button_save"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorPositive"/>
+
+            <Button
+                android:id="@+id/deleteButton"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/dialog_button_delete"
+                android:textColor="@color/colorNegative"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
 
             <LinearLayout
                 android:id="@+id/rightSpacer"

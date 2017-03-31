@@ -165,7 +165,7 @@ public class SerialEditFragment extends DialogFragment {
     private Serial getUpdatedSerial() {
         if (editTabFragment != null && infoTabFragment != null) {
             Serial serial = editTabFragment.getSerialData();
-            serial.setRequestForNotif(infoTabFragment.getNotifSwitcher());
+            serial.enableNotifications(infoTabFragment.getNotificationSwitcher());
             return serial;
         } else {
             return serial;

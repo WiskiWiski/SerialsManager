@@ -95,34 +95,45 @@ public class Notificator {
         notificationManager.notify(notificationId, notification);
     }
 
-    public static void checkNotificationData(final Context context, Serial serial) {
+    private static void returnFailedCallback(DataRequestListener callback, int errId, String msg) {
+        if (callback != null) {
+            callback.onFailed(errId, msg);
+        }
+    }
+
+    public static void checkNotificationData(final Context context, Serial serial, DataRequestListener callback) {
         if (!SettingsHelper.isNotificationsEnable(context)) return;
 
         int minIdentityLvl = PreferencesStorage.getInt(context,
                 Constants.PREFERENCE_MIN_IDENTITY_LVL, Constants.DEFAULT_MIN_IDENTITY_LVL);
         if (serial.getIdentityLevel() == -1) {
-            requestNotificationData(context, serial);
+            requestNotificationData(context, serial, callback);
         } else if (serial.getIdentityLevel() < minIdentityLvl) {
             Log.d(TAG, "Identity level (" + serial.getIdentityLevel()
                     + "%) for '" + serial.getName() + "' is's too low, alarm didn't created");
         } else if (serial.getNextEpisodeDateMs() == -1) {
-            requestNotificationData(context, serial);
+            requestNotificationData(context, serial, callback);
         } else {
             long nextEpDateMs = serial.getNextEpisodeDateMs();
             if (nextEpDateMs == 0) {
-                // TODO: Не удалось получить дату напоминания
+                // TODO: Не удалось получить дату напоминания [id=1]
+                returnFailedCallback(callback, 1, "Next episode date for '" + serial.getName() + "' not found.");
                 Log.d(TAG, "Next episode date for '" + serial.getName() + "' not found.");
             } else if (Utils.isFutureTime(nextEpDateMs)) {
-                serial.setNotificationId((int) (nextEpDateMs / 100000));
                 int nextSeasonNum = serial.getNextSeason();
                 int nextEpisodeNum = serial.getNextEpisode();
                 Log.d(TAG, "Next episode of '" + serial.getName() +
                         "'(" + serial.getIdentityLevel() + "%) s" + nextSeasonNum + "e" + nextEpisodeNum);
                 if (nextSeasonNum == 0 || nextEpisodeNum == 0) {
-                    // TODO: Создать Alarm без номера серии
+                    // TODO: Создать Alarm без номера серии [id=-1]
+                    returnFailedCallback(callback, -1, "Notification without episode number created for '"
+                            + serial.getName() + "'.");
                     SAlarmManager.setAlarm(context, serial);
                 } else {
                     // TODO: Создаем Alarm с номером серии и сезоном
+                    if (callback != null){
+                        callback.onSuccess(serial);
+                    }
                     int seasonNum = serial.getSeason();
                     int episodeNum = serial.getEpisode();
                     if (nextEpisodeNum != 1) {
@@ -135,16 +146,17 @@ public class Notificator {
                     }
                 }
             } else {
-                // Notification time in the past
+                // Notification time in the past [id=2]
                 Log.d(TAG, "Notification time is out of date for '" + serial.getName() + "'. Try again...");
+                returnFailedCallback(callback, 2, "Notification time is out of date for '" + serial.getName() + "'.");
                 serial.resetNotificationData();
                 JsonDatabase.saveSerial(context, serial);
-                requestNotificationData(context, serial);
+                requestNotificationData(context, serial, callback);
             }
         }
     }
 
-    private static void requestNotificationData(final Context context, final Serial serial) {
+    private static void requestNotificationData(final Context context, final Serial serial, final DataRequestListener callback) {
         Log.d(TAG, "Request for " + serial.getName());
         RequestQueue queue = Volley.newRequestQueue(context);
         try {
@@ -169,7 +181,7 @@ public class Notificator {
                                 }
                             }
                             JsonDatabase.saveSerial(context, serial);
-                            checkNotificationData(context, serial);
+                            checkNotificationData(context, serial, callback);
                         }
                     },
                     new Response.ErrorListener() {
@@ -297,6 +309,13 @@ public class Notificator {
             return "12";
         } else
             return null;
+    }
+
+
+    public interface DataRequestListener {
+        void onSuccess(Serial serial);
+
+        void onFailed(int errId, String msg);
     }
 
 }

@@ -11,10 +11,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.managers.AdManager;
+import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.settings.SettingsHelper;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
@@ -30,7 +30,7 @@ public class JsonDatabase {
         List<Serial> serialList = getSerials(context);
         String newSerialName = newSerial.getName().toLowerCase().trim();
         for (Serial serial : serialList) {
-            if (serial.getName().toLowerCase().trim().equals(newSerialName)){
+            if (serial.getName().toLowerCase().trim().equals(newSerialName)) {
                 return true;
             }
         }
@@ -54,7 +54,7 @@ public class JsonDatabase {
             serialJsonObject.put(Constants.JSON_TAG_NEXT_EPISODE, serial.getNextEpisode());
             serialJsonObject.put(Constants.JSON_TAG_NEXT_EPISODE_DATE, serial.getNextEpisodeDateMs());
             serialJsonObject.put(Constants.JSON_TAG_IDENTITY_LVL, serial.getIdentityLevel());
-            serialJsonObject.put(Constants.JSON_TAG_NOTIFICATION_ID, serial.getNotificationId());
+            serialJsonObject.put(Constants.JSON_TAG_NOTIFICATIONS_ENABLE, serial.isNotificationsEnable());
 
             JSONObject mainJsonObject = PreferencesStorage.getJson(context);
             mainJsonObject.put(serial.getName(), serialJsonObject);
@@ -91,7 +91,7 @@ public class JsonDatabase {
                 serial.setNextSeason(getIntFromJson(serialJsonObject, Constants.JSON_TAG_NEXT_SEASON, 0));
                 serial.setNextEpisode(getIntFromJson(serialJsonObject, Constants.JSON_TAG_NEXT_EPISODE, 0));
                 serial.setIdentityLevel(getIntFromJson(serialJsonObject, Constants.JSON_TAG_IDENTITY_LVL, -1));
-                serial.setNotificationId(getIntFromJson(serialJsonObject, Constants.JSON_TAG_NOTIFICATION_ID, 0));
+                serial.enableNotifications(getBoolFromJson(serialJsonObject, Constants.JSON_TAG_NOTIFICATIONS_ENABLE, true));
 
                 long ms = getLongFromJson(serialJsonObject, Constants.JSON_TAG_NEXT_EPISODE_DATE, -1);
                 serial.setNextEpisodeDateMs(ms);
@@ -100,7 +100,7 @@ public class JsonDatabase {
             }
 
 
-            if (SettingsHelper.getShortingMethod(context) == SettingsHelper.ShortingOrder.ALPHABET){
+            if (SettingsHelper.getShortingMethod(context) == SettingsHelper.ShortingOrder.ALPHABET) {
                 serials = sortByAlphabet(serials);
             }
 
@@ -141,6 +141,15 @@ public class JsonDatabase {
     private static long getLongFromJson(JSONObject jsonObject, String dataTag, long defaultValue) {
         try {
             return jsonObject.getLong(dataTag);
+        } catch (JSONException e) {
+            //e.printStackTrace();
+            return defaultValue;
+        }
+    }
+
+    private static boolean getBoolFromJson(JSONObject jsonObject, String dataTag, boolean defaultValue) {
+        try {
+            return jsonObject.getBoolean(dataTag);
         } catch (JSONException e) {
             //e.printStackTrace();
             return defaultValue;

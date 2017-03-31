@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,7 +47,11 @@ public class SAlarmManager {
         intent.putExtra("notification_id", serial.getNotificationId());
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, serial.getNotificationId(), intent, 0);
-        alarmManager.set(AlarmManager.RTC, timeMs, pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeMs, pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, timeMs, pendingIntent);
+        }
         // RTC_WAKEUP - будит из спятчки
         // RTC - если устроство с выключенным экраном, но не скит
     }

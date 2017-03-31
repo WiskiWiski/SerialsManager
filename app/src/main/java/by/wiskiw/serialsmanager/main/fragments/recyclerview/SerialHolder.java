@@ -6,10 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import by.wiskiw.serialsmanager.app.Analytics;
-import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.R;
+import by.wiskiw.serialsmanager.app.Analytics;
 import by.wiskiw.serialsmanager.managers.AdManager;
+import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
@@ -39,7 +39,7 @@ class SerialHolder extends RecyclerView.ViewHolder {
         Analytics.sendPlusEpisodeEvent(context, serial);
         AdManager.plusOneClick(context);
 
-        Notificator.checkNotificationData(context, serial);
+        Notificator.checkNotificationData(context, serial, null);
         //SerialEditListener.registerEpisodeUpdate(context, serial);
         //SerialEditListener.registerEdit(context, serial);
 

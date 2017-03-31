@@ -33,7 +33,7 @@ public class BootService extends IntentService {
         if (SettingsHelper.isNotificationsEnable(context)) {
             List<Serial> serials = JsonDatabase.getSerials(context);
             for (Serial serial : serials) {
-                Notificator.checkNotificationData(context, serial);
+                Notificator.checkNotificationData(context, serial, null);
             }
         }
     }

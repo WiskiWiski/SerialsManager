@@ -14,12 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.app.App;
 import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.managers.AdManager;
-import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.main.fragments.MainFragment;
-import by.wiskiw.serialsmanager.notifications.BootService;
+import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.rate.RateDialog;
 import by.wiskiw.serialsmanager.settings.activities.SettingsActivity;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
@@ -38,6 +37,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (savedInstanceState != null) {
+            mainFragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(MainFragment.F_TAG);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -60,11 +63,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setMainFragment() {
-        mainFragment = new MainFragment();
+        if (mainFragment == null)
+            mainFragment = new MainFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction
-                .replace(R.id.root_container, mainFragment)
+                .replace(R.id.root_container, mainFragment, MainFragment.F_TAG)
                 .commit();
     }
 

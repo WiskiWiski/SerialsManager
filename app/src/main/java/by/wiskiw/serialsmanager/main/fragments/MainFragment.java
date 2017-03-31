@@ -3,6 +3,7 @@ package by.wiskiw.serialsmanager.main.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -19,13 +20,13 @@ import com.google.android.gms.ads.NativeExpressAdView;
 
 import java.util.List;
 
-import by.wiskiw.serialsmanager.app.App;
-import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.main.fragments.recyclerview.SerialListAdapter;
+import by.wiskiw.serialsmanager.app.App;
 import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.edit.fragment.SerialEditFragment;
+import by.wiskiw.serialsmanager.main.fragments.recyclerview.SerialListAdapter;
 import by.wiskiw.serialsmanager.managers.AdManager;
+import by.wiskiw.serialsmanager.notifications.Notificator;
 import by.wiskiw.serialsmanager.notifications.SAlarmManager;
 import by.wiskiw.serialsmanager.objects.Serial;
 import by.wiskiw.serialsmanager.storage.FirebaseDatabase;
@@ -34,6 +35,7 @@ import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 public class MainFragment extends Fragment {
 
     private static final String TAG = Constants.TAG + ":MainFrg";
+    public static final String F_TAG = "main_fragment_tag";
 
     private NativeExpressAdView adView;
     private SerialListAdapter serialListAdapter;
@@ -74,10 +76,10 @@ public class MainFragment extends Fragment {
         serialListAdapter.setOnSizeChangedListener(new SerialListAdapter.OnSizeChangedListener() {
             @Override
             public void onSizeChanged(int recyclerViewSize) {
-                if (recyclerViewSize > 0){
+                if (recyclerViewSize > 0) {
                     emptyDataContainer.setVisibility(View.GONE);
                     emptyDataContainer.setClickable(false);
-                } else  {
+                } else {
                     if (App.isFirstStart()) {
                         addNewSerial();
                     }
@@ -115,7 +117,7 @@ public class MainFragment extends Fragment {
                             requestNotifData = true;
                         }
                         if (requestNotifData) {
-                            Notificator.checkNotificationData(context, newSerial);
+                            Notificator.checkNotificationData(context, newSerial, null);
                         }
 
                     }
@@ -153,7 +155,7 @@ public class MainFragment extends Fragment {
                     JsonDatabase.saveSerial(context, serial);
                     FirebaseDatabase.saveSerial(context, serial);
                     serialListAdapter.addSerialView(serial);
-                    Notificator.checkNotificationData(context, serial);
+                    Notificator.checkNotificationData(context, serial, null);
                 }
             }
         });
