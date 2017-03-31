@@ -7,8 +7,8 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.Locale;
 
 import by.wiskiw.serialsmanager.app.Utils;
-import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.app.Constants;
+import by.wiskiw.serialsmanager.serial.Serial;
 
 
 /**

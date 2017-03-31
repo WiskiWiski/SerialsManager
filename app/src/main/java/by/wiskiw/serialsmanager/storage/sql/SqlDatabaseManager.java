@@ -8,10 +8,9 @@ import android.util.Log;
 import java.io.File;
 import java.util.ArrayList;
 
-import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.managers.AdManager;
-import by.wiskiw.serialsmanager.objects.Serial;
-import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.serial.Serial;
+import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 

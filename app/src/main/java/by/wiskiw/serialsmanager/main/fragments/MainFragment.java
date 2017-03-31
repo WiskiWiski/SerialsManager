@@ -3,7 +3,6 @@ package by.wiskiw.serialsmanager.main.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,13 +21,13 @@ import java.util.List;
 
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.app.App;
-import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.edit.fragment.SerialEditFragment;
 import by.wiskiw.serialsmanager.main.fragments.recyclerview.SerialListAdapter;
 import by.wiskiw.serialsmanager.managers.AdManager;
-import by.wiskiw.serialsmanager.notifications.Notificator;
-import by.wiskiw.serialsmanager.notifications.SAlarmManager;
-import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.serial.notifications.SeAlarmManager;
+import by.wiskiw.serialsmanager.serial.Serial;
+import by.wiskiw.serialsmanager.serial.notifications.data.NotificationDataRequest;
 import by.wiskiw.serialsmanager.storage.FirebaseDatabase;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
@@ -117,7 +116,8 @@ public class MainFragment extends Fragment {
                             requestNotifData = true;
                         }
                         if (requestNotifData) {
-                            Notificator.checkNotificationData(context, newSerial, null);
+                            requestNotificationData(newSerial);
+                            //Notificator.checkNotificationData(context, newSerial, null);
                         }
 
                     }
@@ -128,7 +128,7 @@ public class MainFragment extends Fragment {
                         serialListAdapter.removeSerialView(position);
                         JsonDatabase.deleteSerial(context, serial);
                         FirebaseDatabase.deleteSerial(context, serial);
-                        SAlarmManager.cancelAlarm(context, serial);
+                        SeAlarmManager.cancelAlarm(context, serial);
                         AdManager.showDeleteActionAd();
                     }
                 });
@@ -139,6 +139,24 @@ public class MainFragment extends Fragment {
         if (AdManager.isAdsEnable(context)) {
             setUpAndLoadNativeExpressAds(context);
         }
+    }
+
+    private void requestNotificationData(Serial serial){
+        Context context = getContext();
+        new NotificationDataRequest(context)
+                .setDataRequestListener(new NotificationDataRequest.OnDataRequestListener() {
+                    @Override
+                    public void onSuccess(Serial serial) {
+                        Context context = getContext();
+                        JsonDatabase.saveSerial(context, serial);
+                    }
+
+                    @Override
+                    public void onFailed(int errCode, String msg) {
+
+                    }
+                })
+                .setSerial(serial).requestAlarm();
     }
 
 
@@ -155,7 +173,8 @@ public class MainFragment extends Fragment {
                     JsonDatabase.saveSerial(context, serial);
                     FirebaseDatabase.saveSerial(context, serial);
                     serialListAdapter.addSerialView(serial);
-                    Notificator.checkNotificationData(context, serial, null);
+                    requestNotificationData(serial);
+                    //Notificator.checkNotificationData(context, serial, null);
                 }
             }
         });

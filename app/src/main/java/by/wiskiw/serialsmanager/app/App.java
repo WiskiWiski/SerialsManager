@@ -5,7 +5,6 @@ import android.content.Context;
 import android.util.Log;
 
 import by.wiskiw.serialsmanager.BuildConfig;
-import by.wiskiw.serialsmanager.defaults.Constants;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
 /**

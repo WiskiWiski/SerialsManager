@@ -3,7 +3,7 @@ package by.wiskiw.serialsmanager.settings;
 import android.content.Context;
 
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
 /**

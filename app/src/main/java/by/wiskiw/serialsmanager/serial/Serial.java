@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.objects;
+package by.wiskiw.serialsmanager.serial;
 
 import android.os.Parcel;
 import android.os.Parcelable;

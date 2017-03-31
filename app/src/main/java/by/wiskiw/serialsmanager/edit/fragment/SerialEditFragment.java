@@ -14,10 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.edit.fragment.tabs.EditTabFragment;
 import by.wiskiw.serialsmanager.edit.fragment.tabs.InfoTabFragment;
-import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.serial.Serial;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 /**

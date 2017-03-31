@@ -1,12 +1,12 @@
-package by.wiskiw.serialsmanager.notifications.receivers;
+package by.wiskiw.serialsmanager.serial.notifications.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.notifications.Notificator;
+import by.wiskiw.serialsmanager.app.Constants;
+import by.wiskiw.serialsmanager.serial.notifications.Notificator;
 import by.wiskiw.serialsmanager.settings.SettingsHelper;
 
 /**

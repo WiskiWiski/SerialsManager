@@ -33,8 +33,11 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/left_margin"
             android:clickable="true"
+            android:background="@android:drawable/ic_lock_power_off"
+            />
+            <!--
             android:tint="@color/update_button_style"
-            app:srcCompat="@android:drawable/ic_lock_power_off"/>
+            app:srcCompat="@android:drawable/ic_lock_power_off"/>-->
 
         <Switch
             android:id="@+id/notification_switcher"

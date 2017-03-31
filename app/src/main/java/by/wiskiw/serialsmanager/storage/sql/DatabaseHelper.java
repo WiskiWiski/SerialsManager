@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.app.Constants;
 
 
 /**

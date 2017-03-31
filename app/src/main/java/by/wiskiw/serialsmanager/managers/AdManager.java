@@ -8,7 +8,7 @@ import com.google.android.gms.ads.InterstitialAd;
 
 import by.wiskiw.serialsmanager.app.App;
 import by.wiskiw.serialsmanager.BuildConfig;
-import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
 /**

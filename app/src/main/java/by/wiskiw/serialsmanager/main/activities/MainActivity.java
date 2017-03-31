@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.app.App;
-import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.main.fragments.MainFragment;
 import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.rate.RateDialog;

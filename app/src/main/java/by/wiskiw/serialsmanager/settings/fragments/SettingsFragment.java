@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import by.wiskiw.serialsmanager.BuildConfig;
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.app.Constants;
 
 /**
  * Created by WiskiW on 26.12.2016.

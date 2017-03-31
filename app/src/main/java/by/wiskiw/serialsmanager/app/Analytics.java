@@ -5,8 +5,7 @@ import android.os.Bundle;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.serial.Serial;
 
 /**
  * Created by WiskiW on 27.12.2016.

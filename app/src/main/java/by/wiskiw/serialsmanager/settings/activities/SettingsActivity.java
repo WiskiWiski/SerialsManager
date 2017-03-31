@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.defaults.Constants;
+import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.settings.fragments.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {

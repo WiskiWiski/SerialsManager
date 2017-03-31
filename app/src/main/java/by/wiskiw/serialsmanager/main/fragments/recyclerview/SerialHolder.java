@@ -9,8 +9,9 @@ import android.widget.TextView;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.app.Analytics;
 import by.wiskiw.serialsmanager.managers.AdManager;
-import by.wiskiw.serialsmanager.notifications.Notificator;
-import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.serial.Serial;
+import by.wiskiw.serialsmanager.serial.notifications.SeAlarmManager;
+import by.wiskiw.serialsmanager.serial.notifications.data.NotificationDataRequest;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 /**
@@ -34,14 +35,24 @@ class SerialHolder extends RecyclerView.ViewHolder {
         plusOne = (TextView) itemView.findViewById(R.id.plus_one_btn);
     }
 
-    void plusClick(Context context, Serial serial) {
+    void plusClick(final Context context, Serial serial) {
         JsonDatabase.saveSerial(context, serial);
         Analytics.sendPlusEpisodeEvent(context, serial);
         AdManager.plusOneClick(context);
 
-        Notificator.checkNotificationData(context, serial, null);
-        //SerialEditListener.registerEpisodeUpdate(context, serial);
-        //SerialEditListener.registerEdit(context, serial);
+        new NotificationDataRequest(context)
+                .setDataRequestListener(new NotificationDataRequest.OnDataRequestListener() {
+                    @Override
+                    public void onSuccess(Serial serial) {
+                        JsonDatabase.saveSerial(context, serial);
+                    }
+
+                    @Override
+                    public void onFailed(int errCode, String msg) {
+
+                    }
+                })
+                .setSerial(serial).requestAlarm();
 
     }
 

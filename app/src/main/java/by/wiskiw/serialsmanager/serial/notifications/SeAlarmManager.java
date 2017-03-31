@@ -1,4 +1,4 @@
-package by.wiskiw.serialsmanager.notifications;
+package by.wiskiw.serialsmanager.serial.notifications;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -10,29 +10,37 @@ import android.widget.Toast;
 
 import java.util.TimeZone;
 
+import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.app.Utils;
-import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.notifications.receivers.AlarmReceiver;
-import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.serial.Serial;
+import by.wiskiw.serialsmanager.serial.notifications.data.NotificationDataProcessor;
+import by.wiskiw.serialsmanager.serial.notifications.receivers.AlarmReceiver;
 
 /**
  * Created by WiskiW on 05.03.2017.
  */
 
-public class SAlarmManager {
+public class SeAlarmManager {
 
-    private static final String TAG = Constants.TAG + ":SAlarmManager";
+    private static final String TAG = Constants.TAG + ":SeAlarmManager";
+
 
     public static void setAlarm(Context context, Serial serial) {
+        if (!NotificationDataProcessor.isAlarmAvailable(serial)) {
+            // Данные не подходят для установки уведомления
+            //Log.d(TAG, "Alarm didn't set: episode/season not ready to set alarm!");
+            return;
+        }
+
         long timeMs = serial.getNextEpisodeDateMs();
         if (timeMs == -1) {
-            Log.d(TAG, "setAlarm: next episode date was not found for " + serial.getName());
+            Log.d(TAG, "setAlarm: next episode date not found for " + serial.getName());
             return;
         }
         //Log.d(TAG, "UTC time:   " + calendar.getTimeInMillis());
         timeMs = timeMs + TimeZone.getDefault().getRawOffset(); // получаем местное время
         String timeStr = Utils.getDate(timeMs);
-        Log.d(TAG, "Alarm set on(local) " + timeStr + " - " + timeMs);
+        Log.i(TAG, "Alarm set on(local) " + timeStr + " - " + timeMs);
         //Log.d(TAG, "Alarm set on(SCTms) " + timeStr + " - " + System.currentTimeMillis());
         //Log.d(TAG, "Alarm set on(local) " + timeStr + " - " + (timeMs + TimeZone.getDefault().getRawOffset()));
         //Log.d(TAG, "Local time: " + (calendar.getTimeInMillis() + TimeZone.getDefault().getRawOffset()));
@@ -59,14 +67,14 @@ public class SAlarmManager {
     public static void cancelAlarm(Context context, Serial serial) {
         int notificationId = serial.getNotificationId();
         if (notificationId == 0) {
-            Log.d(TAG, "cancelAlarm: no one alarm has been found for " + serial.getName());
+            //Log.d(TAG, "CancelAlarm: no one alarm has been found for " + serial.getName());
             return;
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, Notificator.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, 0);
         alarmManager.cancel(pendingIntent);
-        Log.d(TAG, "Alarms removed for " + serial.getName());
+        //Log.d(TAG, "CancelAlarm: Cleaned up all alarms for " + serial.getName());
     }
 
 }

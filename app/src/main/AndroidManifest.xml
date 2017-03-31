@@ -31,9 +31,9 @@
             android:name=".settings.activities.SettingsActivity"
             android:label="@string/activity_title_settings"/>
 
-        <receiver android:name=".notifications.receivers.AlarmReceiver" />
+        <receiver android:name=".serial.notifications.receivers.AlarmReceiver" />
         <receiver
-            android:name=".notifications.receivers.BootReceiver"
+            android:name=".serial.notifications.receivers.BootReceiver"
             android:label="BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -42,7 +42,7 @@
         </receiver>
 
 
-        <service android:name=".notifications.BootService"/>
+        <service android:name=".serial.notifications.BootService"/>
     </application>
 
 </manifest>

@@ -18,17 +18,18 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import by.wiskiw.serialsmanager.R;
+import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.app.Utils;
-import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.notifications.Notificator;
-import by.wiskiw.serialsmanager.notifications.SAlarmManager;
-import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.serial.Serial;
+import by.wiskiw.serialsmanager.serial.notifications.SeAlarmManager;
+import by.wiskiw.serialsmanager.serial.notifications.data.NotificationDataRequest;
+import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
 
 /**
  * Created by WiskiW on 28.12.2016.
  */
 
-public class InfoTabFragment extends Fragment implements Notificator.DataRequestListener {
+public class InfoTabFragment extends Fragment implements NotificationDataRequest.OnDataRequestListener {
 
     private static final String TAG = Constants.TAG + ":InfoTab";
 
@@ -48,7 +49,6 @@ public class InfoTabFragment extends Fragment implements Notificator.DataRequest
     private TextView timeTV;
     private TextView statusTV;
 
-    private boolean requestInProgress = false; // TODO : Move to Notificator class
 
     public InfoTabFragment() {
     }
@@ -80,19 +80,18 @@ public class InfoTabFragment extends Fragment implements Notificator.DataRequest
 
         if (serial != null) {
             if (serial.isNotificationsEnable()) {
-                setMainData(serial);
+                requestNotificationData(serial);
                 notificationSwitcher.setChecked(true);
             }
             notificationSwitcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        setMainData(serial);
+                        requestNotificationData(serial);
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                         sharedPreferences.edit()
                                 .putBoolean(getString(R.string.pref_screen_key_new_episode_notification), true)
                                 .apply();
-                        updateNotificationData(serial);
                     } else {
                         showNoDataView();
                     }
@@ -103,24 +102,13 @@ public class InfoTabFragment extends Fragment implements Notificator.DataRequest
                 @Override
                 public void onClick(View v) {
                     notificationSwitcher.setChecked(true);
-                    updateNotificationData(serial);
+                    requestNotificationData(serial);
                 }
             });
         } else {
             notificationSwitcher.setEnabled(false);
         }
         return rootView;
-    }
-
-    private void updateNotificationData(Serial serial) {
-        if (!requestInProgress) {
-            Context context = getContext();
-            showLoadingView();
-            SAlarmManager.cancelAlarm(context, serial);
-            serial.resetNotificationData();
-            requestInProgress = true;
-            Notificator.checkNotificationData(context, serial, this);
-        }
     }
 
     private void initViews(View rootView) {
@@ -165,7 +153,6 @@ public class InfoTabFragment extends Fragment implements Notificator.DataRequest
 
     private void showMainDataView() {
         if (loadingDataContainer != null && dataContainer != null && noDataContainer != null) {
-            Log.d(TAG, "showMainDataView: ");
             loadingDataContainer.setEnabled(false);
             loadingDataContainer.setVisibility(View.GONE);
 
@@ -177,33 +164,39 @@ public class InfoTabFragment extends Fragment implements Notificator.DataRequest
         }
     }
 
-    private void setMainData(Serial serial) {
-        if (serial.getNextEpisodeDateMs() <= 0) {
-            updateNotificationData(serial);
-        } else {
-            showMainDataView();
-            nextEpisodeTV.setText("s" + serial.getNextSeason() + "e" + serial.getNextEpisode());
-            timeTV.setText(String.valueOf(Utils.getDate(serial.getNextEpisodeDateMs())));
-            identityTV.setText(serial.getIdentityLevel() + "%");
-        }
-    }
-
 
     public boolean getNotificationSwitcher() {
         return notificationSwitcher == null || notificationSwitcher.isChecked();
     }
 
-    @Override
-    public void onSuccess(Serial serial) {
-        Log.d(TAG, "onSuccess: ");
-        setMainData(serial);
-        requestInProgress = false;
+
+    private void requestNotificationData(Serial serial) {
+        showLoadingView();
+
+        Context context = getContext();
+        new NotificationDataRequest(context)
+                .setDataRequestListener(this)
+                .setSerial(serial)
+                .resetNotificationData()
+                .requestAlarm();
     }
 
     @Override
-    public void onFailed(int errId, String msg) {
-        Log.d(TAG, "onFailed[" + errId + "]: " + msg);
+    public void onSuccess(Serial serial) {
+        Log.d(TAG, "onSuccess: ");
+        this.serial = serial;
+        Context context = getContext();
+        JsonDatabase.saveSerial(context, serial);
+
+        nextEpisodeTV.setText("s" + serial.getNextSeason() + "e" + serial.getNextEpisode());
+        timeTV.setText(String.valueOf(Utils.getDate(serial.getNextEpisodeDateMs())));
+        identityTV.setText(serial.getIdentityLevel() + "%");
+        showMainDataView();
+    }
+
+    @Override
+    public void onFailed(int errCode, String msg) {
+        Log.d(TAG, "onFailed[" + errCode + "]: " + msg);
         showNoDataView();
-        requestInProgress = false;
     }
 }

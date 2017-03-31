@@ -15,8 +15,8 @@ import java.util.List;
 
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.app.Utils;
-import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.app.Constants;
+import by.wiskiw.serialsmanager.serial.Serial;
 import by.wiskiw.serialsmanager.settings.SettingsHelper;
 
 /**

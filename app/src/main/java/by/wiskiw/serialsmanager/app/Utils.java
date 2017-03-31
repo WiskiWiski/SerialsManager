@@ -8,8 +8,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import by.wiskiw.serialsmanager.defaults.Constants;
-
 /**
  * Created by WiskiW on 22.10.2016.
  */

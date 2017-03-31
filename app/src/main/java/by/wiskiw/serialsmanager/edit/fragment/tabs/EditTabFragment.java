@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import by.wiskiw.serialsmanager.R;
-import by.wiskiw.serialsmanager.defaults.Constants;
-import by.wiskiw.serialsmanager.objects.Serial;
+import by.wiskiw.serialsmanager.app.Constants;
+import by.wiskiw.serialsmanager.serial.Serial;
 
 /**
  * Created by WiskiW on 28.12.2016.
