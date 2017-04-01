@@ -25,8 +25,8 @@ import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.edit.fragment.SerialEditFragment;
 import by.wiskiw.serialsmanager.main.fragments.recyclerview.SerialListAdapter;
 import by.wiskiw.serialsmanager.managers.AdManager;
-import by.wiskiw.serialsmanager.serial.notifications.SeAlarmManager;
 import by.wiskiw.serialsmanager.serial.Serial;
+import by.wiskiw.serialsmanager.serial.notifications.SeAlarmManager;
 import by.wiskiw.serialsmanager.serial.notifications.data.NotificationDataRequest;
 import by.wiskiw.serialsmanager.storage.FirebaseDatabase;
 import by.wiskiw.serialsmanager.storage.json.JsonDatabase;
@@ -71,6 +71,8 @@ public class MainFragment extends Fragment {
 
     private void fillRecyclerView(final Context context) {
         List<Serial> serialList = JsonDatabase.getSerials(context);
+        AdManager.checkForAdEnable(context, serialList);
+
         serialListAdapter = new SerialListAdapter(context);
         serialListAdapter.setOnSizeChangedListener(new SerialListAdapter.OnSizeChangedListener() {
             @Override
@@ -141,7 +143,7 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void requestNotificationData(Serial serial){
+    private void requestNotificationData(Serial serial) {
         Context context = getContext();
         new NotificationDataRequest(context)
                 .setDataRequestListener(new NotificationDataRequest.OnDataRequestListener() {

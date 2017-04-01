@@ -1,6 +1,7 @@
 package by.wiskiw.serialsmanager.storage.json;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,9 +12,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.app.Constants;
-import by.wiskiw.serialsmanager.managers.AdManager;
 import by.wiskiw.serialsmanager.serial.Serial;
 import by.wiskiw.serialsmanager.settings.SettingsHelper;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
@@ -75,21 +74,26 @@ public class JsonDatabase {
     }
 
 
-    private static void checkNameToDisableAds(Context context, String name) {
-        if (name.equalsIgnoreCase(context.getString(R.string.super_secret_password))) {
-            AdManager.disableAds(context);
+    public static List<Serial> getSerials(Context context) {
+        JSONObject jsonObject = PreferencesStorage.getJson(context);
+        List<Serial> serials = parseJsonObject(jsonObject);
+        if (serials != null) {
+            if (SettingsHelper.getShortingMethod(context) == SettingsHelper.ShortingOrder.ALPHABET) {
+                serials = sortByAlphabet(serials);
+            }
+            return serials;
+        } else {
+            return new ArrayList<>();
         }
     }
 
-    public static List<Serial> getSerials(Context context) {
-        List<Serial> serials = new ArrayList<>();
+    public static List<Serial> parseJsonObject(JSONObject jsonObject) {
+        if (jsonObject == null) return null;
         try {
-            JSONObject jsonObject = PreferencesStorage.getJson(context);
+            List<Serial> serials = new ArrayList<>();
             Iterator<String> serialsJson = jsonObject.keys();
-            AdManager.enableAds(context);
             while (serialsJson.hasNext()) {
                 String serialName = serialsJson.next();
-                checkNameToDisableAds(context, serialName);
 
                 JSONObject serialJsonObject = jsonObject.getJSONObject(serialName);
                 Serial serial = new Serial(serialName);
@@ -108,16 +112,11 @@ public class JsonDatabase {
 
                 serials.add(serial);
             }
-
-
-            if (SettingsHelper.getShortingMethod(context) == SettingsHelper.ShortingOrder.ALPHABET) {
-                serials = sortByAlphabet(serials);
-            }
-
+            return serials;
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "parseJsonString: could't parse the JSONObject to Serials List!", e);
+            return null;
         }
-        return serials;
     }
 
     private static List<Serial> sortByAlphabet(List<Serial> list) {

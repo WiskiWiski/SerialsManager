@@ -76,18 +76,28 @@ public class PreferencesStorage {
     public static JSONObject getJson(Context context) {
         if (gJsonObject == null) {
             String jsonString = getString(context, Constants.PREFERENCE_JSON, null);
-            if (jsonString != null && !jsonString.isEmpty()) {
-                try {
-                    gJsonObject = new JSONObject(jsonString);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    gJsonObject = new JSONObject();
-                }
-            } else {
+            gJsonObject = parseJsonString(jsonString);
+            if (gJsonObject == null) {
                 gJsonObject = new JSONObject();
             }
         }
         return gJsonObject;
+    }
+
+    public static JSONObject parseJsonString(String jsonString) {
+        if (jsonString != null && !jsonString.isEmpty()) {
+            JSONObject jsonObject;
+            try {
+                jsonObject = new JSONObject(jsonString);
+            } catch (JSONException e) {
+                Log.e(TAG, "parseJsonString: could't parse the JSONString to JSONObject!", e);
+                jsonObject = new JSONObject();
+            }
+            return jsonObject;
+        } else {
+            Log.d(TAG, "parseJsonString: jsonString is empty!");
+            return null;
+        }
     }
 
     public static void saveJson(Context context, JSONObject jsonObject) {

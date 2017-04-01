@@ -6,9 +6,13 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
-import by.wiskiw.serialsmanager.app.App;
+import java.util.List;
+
 import by.wiskiw.serialsmanager.BuildConfig;
+import by.wiskiw.serialsmanager.R;
+import by.wiskiw.serialsmanager.app.App;
 import by.wiskiw.serialsmanager.app.Constants;
+import by.wiskiw.serialsmanager.serial.Serial;
 import by.wiskiw.serialsmanager.storage.PreferencesStorage;
 
 /**
@@ -82,6 +86,16 @@ public class AdManager {
     public static void enableAds(Context context) {
         adsEnable = true;
         PreferencesStorage.saveBoolean(context, PREFERENCE_LOCAL_ADS_ENABLE, true);
+    }
+
+    public static void checkForAdEnable(Context context, List<Serial> serialList) {
+        for (Serial serial : serialList) {
+            if (serial.getName().equalsIgnoreCase(context.getString(R.string.super_secret_password))) {
+                disableAds(context);
+                return;
+            }
+        }
+        AdManager.enableAds(context);
     }
 
     public static boolean isAdsEnable(Context context) {

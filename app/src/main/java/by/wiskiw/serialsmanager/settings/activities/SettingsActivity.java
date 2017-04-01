@@ -2,6 +2,7 @@ package by.wiskiw.serialsmanager.settings.activities;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,17 +11,22 @@ import android.view.View;
 import by.wiskiw.serialsmanager.R;
 import by.wiskiw.serialsmanager.app.Constants;
 import by.wiskiw.serialsmanager.settings.fragments.SettingsFragment;
+import by.wiskiw.serialsmanager.storage.external.ExternalStorageProvider;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = Constants.TAG + ":SettingsActv";
+
+    public static final int REQUEST_CODE = 3200;
+    public static final int RESULT_LIST_UPDATED = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         setupToolbar();
-        setSettingsFragment(new SettingsFragment(), false, false);
+        SettingsFragment settingsFragment = new SettingsFragment();
+        setSettingsFragment(settingsFragment, false, false);
     }
 
     private void setupToolbar() {
@@ -54,4 +60,9 @@ public class SettingsActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ExternalStorageProvider.onActivityResult(this, requestCode, data);
+    }
 }

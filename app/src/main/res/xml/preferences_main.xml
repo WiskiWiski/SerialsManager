@@ -1,22 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListPreference
-        android:defaultValue="alphabet_order"
-        android:entries="@array/sortingOrderTitles"
-        android:entryValues="@array/sortingOrderValues"
-        android:key="@string/pref_screen_key_sorting_order"
-        android:summary="@string/pref_screen_summary_sorting_order"
-        android:title="@string/pref_screen_title_sorting_order"/>
+    <PreferenceCategory
+        android:title="@string/pref_screen_category_title_basic">
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/sortingOrderTitles"
+            android:entryValues="@array/sortingOrderValues"
+            android:key="@string/pref_screen_key_sorting_order"
+            android:summary="@string/pref_screen_summary_sorting_order"
+            android:title="@string/pref_screen_title_sorting_order"/>
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="@string/pref_screen_key_new_episode_notification"
-        android:summary="@string/pref_screen_summary_new_episode_notification"
-        android:title="@string/pref_screen_title_new_episode_notification"/>
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_screen_key_new_episode_notification"
+            android:summary="@string/pref_screen_summary_new_episode_notification"
+            android:title="@string/pref_screen_title_new_episode_notification"/>
 
-    <Preference
-        android:key="@string/pref_screen_key_version"
-        android:title="@string/pref_screen_title_version"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_screen_category_title_storage">
+
+        <Preference
+            android:key="@string/pref_screen_key_import"
+            android:summary="@string/pref_screen_summary_import"
+            android:title="@string/pref_screen_title_import"/>
+
+        <EditTextPreference
+            android:dialogTitle="@string/pref_screen_dialog_title_export"
+            android:key="@string/pref_screen_key_export"
+            android:summary="@string/pref_screen_summary_export"
+            android:title="@string/pref_screen_title_export"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_screen_category_title_other">
+
+        <Preference
+            android:key="@string/pref_screen_key_version"
+            android:title="@string/pref_screen_title_version"/>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
